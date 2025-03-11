@@ -1,0 +1,31 @@
+{
+	"BUILD_DIR" : "C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen",
+	"CMAKE_BINARY_DIR" : "C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "C:/Users/aksha/College Stuff/QT/TrueExplorer",
+	"CMAKE_SOURCE_DIR" : "C:/Users/aksha/College Stuff/QT/TrueExplorer",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Ninja",
+	"INCLUDE_DIR" : "C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/include",
+	"INPUTS" : 
+	[
+		"C:/Users/aksha/College Stuff/QT/TrueExplorer/images/new_file.png",
+		"C:/Users/aksha/College Stuff/QT/TrueExplorer/images/back_arrow.png",
+		"C:/Users/aksha/College Stuff/QT/TrueExplorer/images/new_folder.png",
+		"C:/Users/aksha/College Stuff/QT/TrueExplorer/images/settings.png",
+		"C:/Users/aksha/College Stuff/QT/TrueExplorer/images/reload.png",
+		"C:/Users/aksha/College Stuff/QT/TrueExplorer/images/foward_arrow.png",
+		"C:/Users/aksha/College Stuff/QT/TrueExplorer/images/up_arrow.png"
+	],
+	"LOCK_FILE" : "C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/CMakeFiles/TrueExplorer_autogen.dir/AutoRcc_icons_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "--no-zstd", "-name", "icons" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_icons.cpp",
+	"RCC_EXECUTABLE" : "C:/Qt/6.8.1/mingw_64/bin/rcc.exe",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/CMakeFiles/TrueExplorer_autogen.dir/AutoRcc_icons_EWIEGA46WW_Used.txt",
+	"SOURCE" : "C:/Users/aksha/College Stuff/QT/TrueExplorer/icons.qrc",
+	"USE_BETTER_GRAPH" : true,
+	"VERBOSITY" : 0
+}

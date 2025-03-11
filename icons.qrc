@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/new_file.png</file>
+        <file>images/new_folder.png</file>
+        <file>images/settings.png</file>
+        <file>images/back_arrow.png</file>
+        <file>images/foward_arrow.png</file>
+        <file>images/up_arrow.png</file>
+        <file>images/reload.png</file>
+    </qresource>
+</RCC>

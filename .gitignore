@@ -1,0 +1,18 @@
+# Qt build directories
+build-*/
+*.pro.user
+*.pro.user.*
+*.qmake.stash
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.dll
+*.exe
+*.app
+*.dSYM
+*.DS_Store
+*.swp
+Makefile
+CMakeLists.txt.user

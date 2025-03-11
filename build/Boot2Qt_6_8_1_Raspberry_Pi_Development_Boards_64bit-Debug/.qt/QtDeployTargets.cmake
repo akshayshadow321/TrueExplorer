@@ -1,0 +1,2 @@
+set(__QT_DEPLOY_TARGET_TrueExplorer_FILE C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Boot2Qt_6_8_1_Raspberry_Pi_Development_Boards_64bit-Debug/TrueExplorer)
+set(__QT_DEPLOY_TARGET_TrueExplorer_TYPE EXECUTABLE)
