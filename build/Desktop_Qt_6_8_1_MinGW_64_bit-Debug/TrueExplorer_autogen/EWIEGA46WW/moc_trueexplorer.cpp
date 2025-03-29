@@ -58,7 +58,10 @@ static constexpr auto qt_meta_stringdata_ZN12TrueExplorerE = QtMocHelpers::strin
     "pos",
     "testFunction",
     "on_prevFolderButton_clicked",
-    "on_nextFolderButton_clicked"
+    "on_nextFolderButton_clicked",
+    "performSearch",
+    "on_searchButton_clicked",
+    "on_searchLineEdit_textChanged"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -70,7 +73,7 @@ Q_CONSTINIT static const uint qt_meta_data_ZN12TrueExplorerE[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-      15,   14, // methods
+      18,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -78,21 +81,24 @@ Q_CONSTINIT static const uint qt_meta_data_ZN12TrueExplorerE[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,  104,    2, 0x08,    1 /* Private */,
-       3,    1,  105,    2, 0x08,    2 /* Private */,
-       5,    0,  108,    2, 0x08,    4 /* Private */,
-       6,    0,  109,    2, 0x08,    5 /* Private */,
-       7,    1,  110,    2, 0x08,    6 /* Private */,
-       8,    0,  113,    2, 0x08,    8 /* Private */,
-       9,    0,  114,    2, 0x08,    9 /* Private */,
-      10,    0,  115,    2, 0x08,   10 /* Private */,
-      11,    0,  116,    2, 0x08,   11 /* Private */,
-      12,    0,  117,    2, 0x08,   12 /* Private */,
-      13,    2,  118,    2, 0x08,   13 /* Private */,
-      17,    1,  123,    2, 0x08,   16 /* Private */,
-      19,    0,  126,    2, 0x08,   18 /* Private */,
-      20,    0,  127,    2, 0x08,   19 /* Private */,
-      21,    0,  128,    2, 0x08,   20 /* Private */,
+       1,    0,  122,    2, 0x08,    1 /* Private */,
+       3,    1,  123,    2, 0x08,    2 /* Private */,
+       5,    0,  126,    2, 0x08,    4 /* Private */,
+       6,    0,  127,    2, 0x08,    5 /* Private */,
+       7,    1,  128,    2, 0x08,    6 /* Private */,
+       8,    0,  131,    2, 0x08,    8 /* Private */,
+       9,    0,  132,    2, 0x08,    9 /* Private */,
+      10,    0,  133,    2, 0x08,   10 /* Private */,
+      11,    0,  134,    2, 0x08,   11 /* Private */,
+      12,    0,  135,    2, 0x08,   12 /* Private */,
+      13,    2,  136,    2, 0x08,   13 /* Private */,
+      17,    1,  141,    2, 0x08,   16 /* Private */,
+      19,    0,  144,    2, 0x08,   18 /* Private */,
+      20,    0,  145,    2, 0x08,   19 /* Private */,
+      21,    0,  146,    2, 0x08,   20 /* Private */,
+      22,    0,  147,    2, 0x08,   21 /* Private */,
+      23,    0,  148,    2, 0x08,   22 /* Private */,
+      24,    0,  149,    2, 0x08,   23 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -107,6 +113,9 @@ Q_CONSTINIT static const uint qt_meta_data_ZN12TrueExplorerE[] = {
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 14, QMetaType::Int,   15,   16,
     QMetaType::Void, QMetaType::QPoint,   18,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -157,6 +166,12 @@ Q_CONSTINIT const QMetaObject TrueExplorer::staticMetaObject = { {
         // method 'on_prevFolderButton_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_nextFolderButton_clicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'performSearch'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'on_searchButton_clicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'on_searchLineEdit_textChanged'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
@@ -182,6 +197,9 @@ void TrueExplorer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         case 12: _t->testFunction(); break;
         case 13: _t->on_prevFolderButton_clicked(); break;
         case 14: _t->on_nextFolderButton_clicked(); break;
+        case 15: _t->performSearch(); break;
+        case 16: _t->on_searchButton_clicked(); break;
+        case 17: _t->on_searchLineEdit_textChanged(); break;
         default: ;
         }
     }
@@ -206,14 +224,14 @@ int TrueExplorer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 15)
+        if (_id < 18)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 15;
+        _id -= 18;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 15)
+        if (_id < 18)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 15;
+        _id -= 18;
     }
     return _id;
 }

@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QDir>
 #include <QListWidget>
+#include <qsqlquery.h>
 #include <qtreewidget.h>
 
 
@@ -20,7 +21,6 @@ public:
     explicit TrueExplorer(QWidget *parent = nullptr);
     ~TrueExplorer();
     QDir dir;
-
 private slots:
     //UI Setup
     void IconSetup();
@@ -49,6 +49,12 @@ private slots:
 
     void on_nextFolderButton_clicked();
 
+    void performSearch();
+
+    void on_searchButton_clicked();
+
+    void on_searchLineEdit_textChanged();
+
 private:
     Ui::TrueExplorer *ui;
     QStringList clipboardPaths;   // Store copied/cut items
@@ -64,6 +70,9 @@ private:
 
     QVector<QString> directoryHistory;  // Stores visited directories
     int historyIndex = -1;              // Tracks the current position
+
+    void populateTreeWidget(QSqlQuery &query);
+
 protected:
     void keyPressEvent(QKeyEvent *event) override;
 

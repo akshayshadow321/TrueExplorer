@@ -13,6 +13,14 @@
 #include <QKeyEvent>
 #include <QFile>
 #include <QFileDialog>
+#include "indexinghandler.h"
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QTreeWidgetItem>
+#include <qstandardpaths.h>
+#include <QLineEdit>
+
 
 TrueExplorer::TrueExplorer(QWidget *parent)
     : QMainWindow(parent)
@@ -20,6 +28,7 @@ TrueExplorer::TrueExplorer(QWidget *parent)
     // ,dir(QDir::rootPath())
 {
     ui->setupUi(this);
+    indexinghandler::checkAndInitializeIndexing();
     QFileIconProvider iconProvider;
     IconSetup();
     ui->nameSortRadioButton->setChecked(true);
@@ -32,8 +41,7 @@ TrueExplorer::TrueExplorer(QWidget *parent)
     connect(ui->sizeSortRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
     connect(ui->extensionSortRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
     connect(ui->tileViewRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
-    connect(ui->listViewRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
-
+    connect(ui->listViewRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);    
 
     loadDirectory(dir.path());
 
@@ -44,7 +52,8 @@ TrueExplorer::~TrueExplorer()
     delete ui;
 }
 
-void TrueExplorer::updateBreadcrumbs(const QString &path) {
+void TrueExplorer::updateBreadcrumbs(const QString &path)
+{
     QLayout *layout = ui->breadcrumbWidget->layout();
     while (QLayoutItem *item = layout->takeAt(0)) {
         delete item->widget(); // Delete the widget
@@ -155,6 +164,112 @@ void TrueExplorer::loadDirectory(const QString &path) {
         item->setText(0, entry.fileName());
         item->setIcon(0, iconProvider.icon(entry));
         item->setData(0, Qt::UserRole, entry.absoluteFilePath());
+    }
+}
+
+void TrueExplorer::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    QString filePath = item->data(0, Qt::UserRole).toString();
+    QFileInfo fileInfo(filePath);
+    if (fileInfo.isDir()) {
+        loadDirectory(filePath);
+    } else {
+        QUrl fileUrl = QUrl::fromLocalFile(filePath);
+        QDesktopServices::openUrl(fileUrl);
+    }
+}
+
+
+void TrueExplorer::on_treeWidget_customContextMenuRequested(const QPoint &pos)
+{
+    QList<QTreeWidgetItem *> selectedItems = ui->treeWidget->selectedItems();
+    if (selectedItems.isEmpty())
+        return;
+
+    QStringList filePaths;
+    for (QTreeWidgetItem *item : selectedItems)
+    {
+        filePaths.append(item->data(0, Qt::UserRole).toString());
+    }
+
+    QMenu contextMenu(this);
+
+    QAction *cutAction = new QAction("Cut", &contextMenu);
+    QAction *copyAction = new QAction("Copy", &contextMenu);
+    QAction *pasteAction = new QAction("Paste", &contextMenu);
+    QAction *deleteAction = new QAction("Delete", &contextMenu);
+    QAction *addToFavourites = new QAction("Add to Favourites", &contextMenu);
+    QAction *viewProperties = new QAction("View Properties", &contextMenu);
+
+    connect(cutAction, &QAction::triggered, this, [=]() { ContextMenuActions::cutFiles(clipboardPaths, cutMode, filePaths); });
+    connect(copyAction, &QAction::triggered, this, [=]() { ContextMenuActions::copyFiles(clipboardPaths, cutMode, filePaths); });
+    connect(pasteAction, &QAction::triggered, this, [=]() {
+        QTreeWidgetItem *targetItem = selectedItems.first();
+        QString targetDir = targetItem->data(0, Qt::UserRole).toString();
+        if (!targetDir.isEmpty()) ContextMenuActions::pasteFiles(clipboardPaths, cutMode, targetDir);
+    });
+    connect(deleteAction, &QAction::triggered, this, [=]() { ContextMenuActions::deleteFiles(filePaths); });
+    connect(addToFavourites, &QAction::triggered, this, [=]() { ContextMenuActions::addToFavourites(filePaths); });
+    connect(viewProperties, &QAction::triggered, this, [=]() { ContextMenuActions::viewProperties(filePaths); });
+
+    contextMenu.addAction(cutAction);
+    contextMenu.addAction(copyAction);
+    contextMenu.addAction(pasteAction);
+    contextMenu.addAction(deleteAction);
+    contextMenu.addAction(addToFavourites);
+    contextMenu.addAction(viewProperties);
+
+    contextMenu.exec(ui->treeWidget->mapToGlobal(pos));
+}
+
+void TrueExplorer::performSearch() {
+    QString searchText = ui->searchLineEdit->toPlainText().trimmed();
+    if (searchText.isEmpty()) return;  // Ignore empty input
+
+    qDebug() << searchText;
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/file_index.db");
+
+    if (!db.open()) {
+        qDebug() << "Database connection failed:" << db.lastError().text();
+        return;
+    }
+
+    QSqlQuery query;
+    query.prepare("SELECT file_name, path, size FROM files WHERE file_name LIKE ?");
+    query.addBindValue("%" + searchText + "%");  // Fixed column name
+
+    if (!query.exec()) {
+        qDebug() << "Query execution failed:" << query.lastError().text();
+        return;
+    }
+
+    // Populate treeWidget with results
+    populateTreeWidget(query);
+}
+
+
+void TrueExplorer::populateTreeWidget(QSqlQuery &query) {
+    ui->treeWidget->clear();  // Clear previous results
+
+    ui->treeWidget->setColumnCount(1);
+    ui->treeWidget->setHeaderLabel("Name");
+
+    QFileIconProvider iconProvider;
+
+    while (query.next()) {
+        QString name = query.value(0).toString();
+        QString path = query.value(1).toString();
+        qint64 size = query.value(2).toLongLong();  // Convert to qint64 for proper size representation
+
+        QFileInfo fileInfo(path);
+
+        QTreeWidgetItem *item = new QTreeWidgetItem(ui->treeWidget);
+        item->setText(0, name);
+        item->setIcon(0, iconProvider.icon(fileInfo)); // Assign appropriate file/folder icon
+        item->setData(0, Qt::UserRole, path); // Store full path for reference
+
+        ui->treeWidget->addTopLevelItem(item);
     }
 }
 
@@ -459,61 +574,6 @@ void TrueExplorer::reloadDirectory()
     loadDirectory(dir.absolutePath());
 }
 
-void TrueExplorer::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
-{
-    QString filePath = item->data(0, Qt::UserRole).toString();
-    QFileInfo fileInfo(filePath);
-    if (fileInfo.isDir()) {
-        loadDirectory(filePath);
-    } else {
-        QUrl fileUrl = QUrl::fromLocalFile(filePath);
-        QDesktopServices::openUrl(fileUrl);
-    }
-}
-
-
-void TrueExplorer::on_treeWidget_customContextMenuRequested(const QPoint &pos)
-{
-    QList<QTreeWidgetItem *> selectedItems = ui->treeWidget->selectedItems();
-    if (selectedItems.isEmpty())
-        return;
-
-    QStringList filePaths;
-    for (QTreeWidgetItem *item : selectedItems)
-    {
-        filePaths.append(item->data(0, Qt::UserRole).toString());
-    }
-
-    QMenu contextMenu(this);
-
-    QAction *cutAction = new QAction("Cut", &contextMenu);
-    QAction *copyAction = new QAction("Copy", &contextMenu);
-    QAction *pasteAction = new QAction("Paste", &contextMenu);
-    QAction *deleteAction = new QAction("Delete", &contextMenu);
-    QAction *addToFavourites = new QAction("Add to Favourites", &contextMenu);
-    QAction *viewProperties = new QAction("View Properties", &contextMenu);
-
-    connect(cutAction, &QAction::triggered, this, [=]() { ContextMenuActions::cutFiles(clipboardPaths, cutMode, filePaths); });
-    connect(copyAction, &QAction::triggered, this, [=]() { ContextMenuActions::copyFiles(clipboardPaths, cutMode, filePaths); });
-    connect(pasteAction, &QAction::triggered, this, [=]() {
-        QTreeWidgetItem *targetItem = selectedItems.first();
-        QString targetDir = targetItem->data(0, Qt::UserRole).toString();
-        if (!targetDir.isEmpty()) ContextMenuActions::pasteFiles(clipboardPaths, cutMode, targetDir);
-    });
-    connect(deleteAction, &QAction::triggered, this, [=]() { ContextMenuActions::deleteFiles(filePaths); });
-    connect(addToFavourites, &QAction::triggered, this, [=]() { ContextMenuActions::addToFavourites(filePaths); });
-    connect(viewProperties, &QAction::triggered, this, [=]() { ContextMenuActions::viewProperties(filePaths); });
-
-    contextMenu.addAction(cutAction);
-    contextMenu.addAction(copyAction);
-    contextMenu.addAction(pasteAction);
-    contextMenu.addAction(deleteAction);
-    contextMenu.addAction(addToFavourites);
-    contextMenu.addAction(viewProperties);
-
-    contextMenu.exec(ui->treeWidget->mapToGlobal(pos));
-}
-
 void TrueExplorer::IconSetup() {
     if (!ui) return; // Prevent crashes if UI is null
 
@@ -558,5 +618,17 @@ void TrueExplorer::on_nextFolderButton_clicked()
         historyIndex++;
         loadDirectory(directoryHistory[historyIndex]);
     }
+}
+
+
+void TrueExplorer::on_searchButton_clicked()
+{
+    performSearch();
+}
+
+
+void TrueExplorer::on_searchLineEdit_textChanged()
+{
+    performSearch();
 }
 

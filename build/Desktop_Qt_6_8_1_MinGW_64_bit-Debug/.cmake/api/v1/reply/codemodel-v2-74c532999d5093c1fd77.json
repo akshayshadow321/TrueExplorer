@@ -7,7 +7,7 @@
 				{
 					"build" : ".",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-.-Debug-c7e4a4ab81556ccdff76.json",
+					"jsonFile" : "directory-.-Debug-040a4b12693edcbf3067.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.16"
@@ -44,7 +44,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "TrueExplorer::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-TrueExplorer-Debug-170d1002b3ae0e9927cf.json",
+					"jsonFile" : "target-TrueExplorer-Debug-489c2b38e03aa16ebaa4.json",
 					"name" : "TrueExplorer",
 					"projectIndex" : 0
 				},

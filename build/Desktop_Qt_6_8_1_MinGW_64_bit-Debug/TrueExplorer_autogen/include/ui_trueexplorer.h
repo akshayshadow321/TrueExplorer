@@ -23,6 +23,7 @@
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QVBoxLayout>
@@ -83,6 +84,8 @@ public:
     QPushButton *reloadButton;
     QWidget *breadcrumbWidget;
     QHBoxLayout *horizontalLayout_9;
+    QTextEdit *searchLineEdit;
+    QPushButton *searchButton;
     QFrame *line_7;
     QSplitter *splitter;
     QWidget *verticalWidget;
@@ -379,6 +382,23 @@ public:
 
         breadcrumbsLayout->addWidget(breadcrumbWidget);
 
+        searchLineEdit = new QTextEdit(breadcrumbsLayout_2);
+        searchLineEdit->setObjectName("searchLineEdit");
+        QSizePolicy sizePolicy6(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Ignored);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(searchLineEdit->sizePolicy().hasHeightForWidth());
+        searchLineEdit->setSizePolicy(sizePolicy6);
+
+        breadcrumbsLayout->addWidget(searchLineEdit);
+
+        searchButton = new QPushButton(breadcrumbsLayout_2);
+        searchButton->setObjectName("searchButton");
+        sizePolicy2.setHeightForWidth(searchButton->sizePolicy().hasHeightForWidth());
+        searchButton->setSizePolicy(sizePolicy2);
+
+        breadcrumbsLayout->addWidget(searchButton);
+
 
         horizontalLayout_6->addWidget(breadcrumbsLayout_2);
 
@@ -398,11 +418,11 @@ public:
         splitter->setChildrenCollapsible(false);
         verticalWidget = new QWidget(splitter);
         verticalWidget->setObjectName("verticalWidget");
-        QSizePolicy sizePolicy6(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
-        sizePolicy6.setHorizontalStretch(0);
-        sizePolicy6.setVerticalStretch(0);
-        sizePolicy6.setHeightForWidth(verticalWidget->sizePolicy().hasHeightForWidth());
-        verticalWidget->setSizePolicy(sizePolicy6);
+        QSizePolicy sizePolicy7(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+        sizePolicy7.setHorizontalStretch(0);
+        sizePolicy7.setVerticalStretch(0);
+        sizePolicy7.setHeightForWidth(verticalWidget->sizePolicy().hasHeightForWidth());
+        verticalWidget->setSizePolicy(sizePolicy7);
         verticalWidget->setMinimumSize(QSize(100, 0));
         verticalWidget->setMaximumSize(QSize(400, 16777215));
         verticalWidget->setBaseSize(QSize(300, 0));
@@ -412,8 +432,8 @@ public:
         splitter->addWidget(verticalWidget);
         verticalWidget1 = new QWidget(splitter);
         verticalWidget1->setObjectName("verticalWidget1");
-        sizePolicy6.setHeightForWidth(verticalWidget1->sizePolicy().hasHeightForWidth());
-        verticalWidget1->setSizePolicy(sizePolicy6);
+        sizePolicy7.setHeightForWidth(verticalWidget1->sizePolicy().hasHeightForWidth());
+        verticalWidget1->setSizePolicy(sizePolicy7);
         verticalLayout_3 = new QVBoxLayout(verticalWidget1);
         verticalLayout_3->setObjectName("verticalLayout_3");
         treeWidget = new QTreeWidget(verticalWidget1);
@@ -465,6 +485,7 @@ public:
         nextFolderButton->setText(QString());
         prevDirectoryButton->setText(QString());
         reloadButton->setText(QString());
+        searchButton->setText(QCoreApplication::translate("TrueExplorer", "Search", nullptr));
     } // retranslateUi
 
 };
