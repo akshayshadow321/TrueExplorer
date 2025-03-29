@@ -326,6 +326,12 @@
 	"HEADERS" : 
 	[
 		[
+			"C:/Users/aksha/College Stuff/QT/TrueExplorer/CollapsibleSidebar.h",
+			"MU",
+			"EWIEGA46WW/moc_CollapsibleSidebar.cpp",
+			null
+		],
+		[
 			"C:/Users/aksha/College Stuff/QT/TrueExplorer/contextmenuactions.h",
 			"MU",
 			"EWIEGA46WW/moc_contextmenuactions.cpp",
@@ -417,6 +423,11 @@
 	"SETTINGS_FILE" : "C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/CMakeFiles/TrueExplorer_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
+		[
+			"C:/Users/aksha/College Stuff/QT/TrueExplorer/CollapsibleSidebar.cpp",
+			"MU",
+			null
+		],
 		[
 			"C:/Users/aksha/College Stuff/QT/TrueExplorer/contextmenuactions.cpp",
 			"MU",

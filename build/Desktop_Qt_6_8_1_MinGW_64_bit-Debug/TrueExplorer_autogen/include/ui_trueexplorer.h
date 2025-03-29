@@ -88,9 +88,9 @@ public:
     QPushButton *searchButton;
     QFrame *line_7;
     QSplitter *splitter;
-    QWidget *verticalWidget;
+    QWidget *navMenu;
     QVBoxLayout *verticalLayout_2;
-    QWidget *verticalWidget1;
+    QWidget *verticalWidget;
     QVBoxLayout *verticalLayout_3;
     QTreeWidget *treeWidget;
     QMenuBar *menubar;
@@ -416,37 +416,38 @@ public:
         splitter->setObjectName("splitter");
         splitter->setOrientation(Qt::Orientation::Horizontal);
         splitter->setChildrenCollapsible(false);
-        verticalWidget = new QWidget(splitter);
-        verticalWidget->setObjectName("verticalWidget");
+        navMenu = new QWidget(splitter);
+        navMenu->setObjectName("navMenu");
         QSizePolicy sizePolicy7(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy7.setHorizontalStretch(0);
         sizePolicy7.setVerticalStretch(0);
+        sizePolicy7.setHeightForWidth(navMenu->sizePolicy().hasHeightForWidth());
+        navMenu->setSizePolicy(sizePolicy7);
+        navMenu->setMaximumSize(QSize(400, 16777215));
+        navMenu->setBaseSize(QSize(300, 0));
+        navMenu->setStyleSheet(QString::fromUtf8("background-color: rgb(53, 53, 53);"));
+        verticalLayout_2 = new QVBoxLayout(navMenu);
+        verticalLayout_2->setObjectName("verticalLayout_2");
+        splitter->addWidget(navMenu);
+        verticalWidget = new QWidget(splitter);
+        verticalWidget->setObjectName("verticalWidget");
         sizePolicy7.setHeightForWidth(verticalWidget->sizePolicy().hasHeightForWidth());
         verticalWidget->setSizePolicy(sizePolicy7);
-        verticalWidget->setMinimumSize(QSize(100, 0));
-        verticalWidget->setMaximumSize(QSize(400, 16777215));
-        verticalWidget->setBaseSize(QSize(300, 0));
-        verticalWidget->setStyleSheet(QString::fromUtf8("background-color: rgb(53, 53, 53);"));
-        verticalLayout_2 = new QVBoxLayout(verticalWidget);
-        verticalLayout_2->setObjectName("verticalLayout_2");
-        splitter->addWidget(verticalWidget);
-        verticalWidget1 = new QWidget(splitter);
-        verticalWidget1->setObjectName("verticalWidget1");
-        sizePolicy7.setHeightForWidth(verticalWidget1->sizePolicy().hasHeightForWidth());
-        verticalWidget1->setSizePolicy(sizePolicy7);
-        verticalLayout_3 = new QVBoxLayout(verticalWidget1);
+        verticalLayout_3 = new QVBoxLayout(verticalWidget);
         verticalLayout_3->setObjectName("verticalLayout_3");
-        treeWidget = new QTreeWidget(verticalWidget1);
+        treeWidget = new QTreeWidget(verticalWidget);
         QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem();
         __qtreewidgetitem->setText(0, QString::fromUtf8("1"));
         treeWidget->setHeaderItem(__qtreewidgetitem);
         treeWidget->setObjectName("treeWidget");
+        sizePolicy7.setHeightForWidth(treeWidget->sizePolicy().hasHeightForWidth());
+        treeWidget->setSizePolicy(sizePolicy7);
         treeWidget->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
         treeWidget->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
 
         verticalLayout_3->addWidget(treeWidget);
 
-        splitter->addWidget(verticalWidget1);
+        splitter->addWidget(verticalWidget);
 
         gridLayout->addWidget(splitter, 2, 0, 1, 1);
 

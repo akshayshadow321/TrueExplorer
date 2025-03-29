@@ -1,6 +1,7 @@
 #include "trueexplorer.h"
 #include "./ui_trueexplorer.h"
 #include "contextmenuactions.h"
+#include "CollapsibleSidebar.h"
 #include <QIcon>
 #include <QDir>
 #include <QDesktopServices>
@@ -20,6 +21,7 @@
 #include <QTreeWidgetItem>
 #include <qstandardpaths.h>
 #include <QLineEdit>
+#include <QVBoxLayout>
 
 
 TrueExplorer::TrueExplorer(QWidget *parent)
@@ -41,7 +43,13 @@ TrueExplorer::TrueExplorer(QWidget *parent)
     connect(ui->sizeSortRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
     connect(ui->extensionSortRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
     connect(ui->tileViewRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
-    connect(ui->listViewRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);    
+    connect(ui->listViewRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
+
+    QVBoxLayout *layout = new QVBoxLayout(ui->navMenu);
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    CollapsibleSidebar *sidebar = new CollapsibleSidebar();
+    layout->addWidget(sidebar);
 
     loadDirectory(dir.path());
 

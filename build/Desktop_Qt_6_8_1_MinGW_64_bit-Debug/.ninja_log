@@ -1,23 +1,44 @@
 # ninja log v6
-18	247	7641546078731929	TrueExplorer_autogen/timestamp	34e7a2c824c01f49
-1189	4815	7641536539178510	CMakeFiles/TrueExplorer.dir/TrueExplorer_autogen/mocs_compilation.cpp.obj	882f91fb1c1cb4ee
-5185	5894	7641546130401158	TrueExplorer.exe	46fa7952ca523032
-18	247	7641546078731929	TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
-18	247	7641546078731929	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/timestamp	34e7a2c824c01f49
+49	388	7649288999676410	TrueExplorer_autogen/timestamp	34e7a2c824c01f49
+797	4000	7641663073860435	CMakeFiles/TrueExplorer.dir/TrueExplorer_autogen/mocs_compilation.cpp.obj	882f91fb1c1cb4ee
+7843	8727	7649289077616353	TrueExplorer.exe	46fa7952ca523032
+49	388	7649288999676410	TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
+49	388	7649288999676410	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/timestamp	34e7a2c824c01f49
 1083	1246	7633848675340457	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/EWIEGA46WW/qrc_icons.cpp	fc672b367f6553f3
-18	247	7641546078731929	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
-1193	4496	7641536539214024	CMakeFiles/TrueExplorer.dir/main.cpp.obj	1ac657f6e60e1a99
-249	5185	7641546081034886	CMakeFiles/TrueExplorer.dir/trueexplorer.cpp.obj	7c2d03d40a82b735
+49	388	7649288999676410	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
+800	3906	7641663073885751	CMakeFiles/TrueExplorer.dir/main.cpp.obj	1ac657f6e60e1a99
+389	7843	7649289003081791	CMakeFiles/TrueExplorer.dir/trueexplorer.cpp.obj	7c2d03d40a82b735
 341	3279	7641396638874650	CMakeFiles/TrueExplorer.dir/indexinghandler.cpp.obj	9f7eea4c19df63d5
 1083	1246	7633848675340457	TrueExplorer_autogen/EWIEGA46WW/qrc_icons.cpp	fc672b367f6553f3
 981	1558	7634128931601619	CMakeFiles/TrueExplorer.dir/TrueExplorer_autogen/EWIEGA46WW/qrc_icons.cpp.obj	63e6615f485ef71
-34	846	7634128920230085	build.ninja	10e4f51472fb4d08
+34	846	7649296441588235	build.ninja	10e4f51472fb4d08
 974	5675	7634128931533386	CMakeFiles/TrueExplorer.dir/contextmenuactions.cpp.obj	f7c1e01b06a890f8
-14	796	7641663073062296	TrueExplorer_autogen/timestamp	34e7a2c824c01f49
-14	796	7641663073062296	TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
-14	796	7641663073062296	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/timestamp	34e7a2c824c01f49
-14	796	7641663073062296	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
-800	3906	7641663073885751	CMakeFiles/TrueExplorer.dir/main.cpp.obj	1ac657f6e60e1a99
-797	4000	7641663073860435	CMakeFiles/TrueExplorer.dir/TrueExplorer_autogen/mocs_compilation.cpp.obj	882f91fb1c1cb4ee
-804	5169	7641663073925751	CMakeFiles/TrueExplorer.dir/trueexplorer.cpp.obj	7c2d03d40a82b735
-5169	5669	7641663117581628	TrueExplorer.exe	46fa7952ca523032
+31	802	7649301487721572	TrueExplorer_autogen/timestamp	34e7a2c824c01f49
+31	802	7649301487721572	TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
+31	802	7649301487721572	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/timestamp	34e7a2c824c01f49
+31	802	7649301487721572	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
+809	3896	7649301488510576	CMakeFiles/TrueExplorer.dir/CollapsibleSidebar.cpp.obj	8775e230af74f466
+803	4125	7649301488448569	CMakeFiles/TrueExplorer.dir/TrueExplorer_autogen/mocs_compilation.cpp.obj	882f91fb1c1cb4ee
+806	5308	7649301488489496	CMakeFiles/TrueExplorer.dir/trueexplorer.cpp.obj	7c2d03d40a82b735
+5308	6060	7649301533498918	TrueExplorer.exe	c919a2cd808fc374
+12	164	7649302524960131	TrueExplorer_autogen/timestamp	34e7a2c824c01f49
+12	164	7649302524960131	TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
+12	164	7649302524960131	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/timestamp	34e7a2c824c01f49
+12	164	7649302524960131	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
+169	2632	7649302526529753	CMakeFiles/TrueExplorer.dir/CollapsibleSidebar.cpp.obj	8775e230af74f466
+165	3888	7649302526490746	CMakeFiles/TrueExplorer.dir/trueexplorer.cpp.obj	7c2d03d40a82b735
+3888	4568	7649302563718913	TrueExplorer.exe	c919a2cd808fc374
+37	211	7649303252860633	TrueExplorer_autogen/timestamp	34e7a2c824c01f49
+37	211	7649303252860633	TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
+37	211	7649303252860633	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/timestamp	34e7a2c824c01f49
+37	211	7649303252860633	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
+216	2768	7649303254645829	CMakeFiles/TrueExplorer.dir/CollapsibleSidebar.cpp.obj	8775e230af74f466
+213	4009	7649303254615873	CMakeFiles/TrueExplorer.dir/trueexplorer.cpp.obj	7c2d03d40a82b735
+4009	4715	7649303292588704	TrueExplorer.exe	c919a2cd808fc374
+42	202	7649305262273282	TrueExplorer_autogen/timestamp	34e7a2c824c01f49
+42	202	7649305262273282	TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
+42	202	7649305262273282	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/timestamp	34e7a2c824c01f49
+42	202	7649305262273282	C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/mocs_compilation.cpp	34e7a2c824c01f49
+206	2831	7649305263913896	CMakeFiles/TrueExplorer.dir/CollapsibleSidebar.cpp.obj	8775e230af74f466
+203	4135	7649305263879687	CMakeFiles/TrueExplorer.dir/trueexplorer.cpp.obj	7c2d03d40a82b735
+4135	4845	7649305303208220	TrueExplorer.exe	c919a2cd808fc374

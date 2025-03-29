@@ -27,6 +27,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         icons.qrc
         contextmenuactions.h contextmenuactions.cpp
         indexinghandler.h indexinghandler.cpp
+        CollapsibleSidebar.h CollapsibleSidebar.cpp
 
 
 
