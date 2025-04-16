@@ -21,8 +21,8 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QSplitter>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QTreeWidget>
@@ -53,12 +53,12 @@ public:
     QRadioButton *timeSortRadioButton;
     QLabel *label;
     QFrame *line_2;
-    QWidget *viewLayout_2;
-    QVBoxLayout *viewLayout;
-    QGridLayout *gridLayout_3;
-    QRadioButton *listViewRadioButton;
-    QRadioButton *tileViewRadioButton;
+    QWidget *searchOptionsLayout_2;
+    QVBoxLayout *searchOptionsLayout;
     QLabel *label_2;
+    QVBoxLayout *verticalLayout_3;
+    QRadioButton *currentDirRadioButton;
+    QRadioButton *filebaseRadioButton;
     QFrame *line_4;
     QWidget *graphicsLayout;
     QVBoxLayout *verticalLayout_4;
@@ -71,7 +71,6 @@ public:
     QHBoxLayout *horizontalLayout_5;
     QToolButton *viewIndexToolButton;
     QFrame *line_6;
-    QToolButton *settingsToolButton;
     QWidget *navbar;
     QHBoxLayout *horizontalLayout_6;
     QWidget *horizontalWidget;
@@ -87,12 +86,18 @@ public:
     QTextEdit *searchLineEdit;
     QPushButton *searchButton;
     QFrame *line_7;
-    QSplitter *splitter;
-    QWidget *navMenu;
-    QVBoxLayout *verticalLayout_2;
     QWidget *verticalWidget;
-    QVBoxLayout *verticalLayout_3;
-    QTreeWidget *treeWidget;
+    QVBoxLayout *verticalLayout_2;
+    QWidget *widget;
+    QHBoxLayout *horizontalLayout_3;
+    QWidget *verticalWidget_2;
+    QVBoxLayout *verticalLayout_9;
+    QPushButton *recentFilesButton;
+    QPushButton *favoritesButton;
+    QTableWidget *driveTable;
+    QWidget *verticalWidget_3;
+    QVBoxLayout *verticalLayout_8;
+    QTreeWidget *treeWidget_2;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -216,34 +221,40 @@ public:
 
         horizontalLayout->addWidget(line_2);
 
-        viewLayout_2 = new QWidget(optionsBar);
-        viewLayout_2->setObjectName("viewLayout_2");
-        sizePolicy3.setHeightForWidth(viewLayout_2->sizePolicy().hasHeightForWidth());
-        viewLayout_2->setSizePolicy(sizePolicy3);
-        viewLayout = new QVBoxLayout(viewLayout_2);
-        viewLayout->setObjectName("viewLayout");
-        gridLayout_3 = new QGridLayout();
-        gridLayout_3->setObjectName("gridLayout_3");
-        listViewRadioButton = new QRadioButton(viewLayout_2);
-        listViewRadioButton->setObjectName("listViewRadioButton");
-
-        gridLayout_3->addWidget(listViewRadioButton, 3, 0, 1, 1);
-
-        tileViewRadioButton = new QRadioButton(viewLayout_2);
-        tileViewRadioButton->setObjectName("tileViewRadioButton");
-
-        gridLayout_3->addWidget(tileViewRadioButton, 1, 0, 1, 1);
-
-        label_2 = new QLabel(viewLayout_2);
+        searchOptionsLayout_2 = new QWidget(optionsBar);
+        searchOptionsLayout_2->setObjectName("searchOptionsLayout_2");
+        QSizePolicy sizePolicy4(QSizePolicy::Policy::Maximum, QSizePolicy::Policy::Maximum);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(searchOptionsLayout_2->sizePolicy().hasHeightForWidth());
+        searchOptionsLayout_2->setSizePolicy(sizePolicy4);
+        searchOptionsLayout = new QVBoxLayout(searchOptionsLayout_2);
+        searchOptionsLayout->setObjectName("searchOptionsLayout");
+        label_2 = new QLabel(searchOptionsLayout_2);
         label_2->setObjectName("label_2");
+        sizePolicy4.setHeightForWidth(label_2->sizePolicy().hasHeightForWidth());
+        label_2->setSizePolicy(sizePolicy4);
 
-        gridLayout_3->addWidget(label_2, 0, 0, 1, 1);
+        searchOptionsLayout->addWidget(label_2);
+
+        verticalLayout_3 = new QVBoxLayout();
+        verticalLayout_3->setObjectName("verticalLayout_3");
+        currentDirRadioButton = new QRadioButton(searchOptionsLayout_2);
+        currentDirRadioButton->setObjectName("currentDirRadioButton");
+
+        verticalLayout_3->addWidget(currentDirRadioButton);
+
+        filebaseRadioButton = new QRadioButton(searchOptionsLayout_2);
+        filebaseRadioButton->setObjectName("filebaseRadioButton");
+        filebaseRadioButton->setChecked(true);
+
+        verticalLayout_3->addWidget(filebaseRadioButton);
 
 
-        viewLayout->addLayout(gridLayout_3);
+        searchOptionsLayout->addLayout(verticalLayout_3);
 
 
-        horizontalLayout->addWidget(viewLayout_2);
+        horizontalLayout->addWidget(searchOptionsLayout_2);
 
         line_4 = new QFrame(optionsBar);
         line_4->setObjectName("line_4");
@@ -306,11 +317,6 @@ public:
 
         horizontalLayout_5->addWidget(line_6);
 
-        settingsToolButton = new QToolButton(optionsLayout);
-        settingsToolButton->setObjectName("settingsToolButton");
-
-        horizontalLayout_5->addWidget(settingsToolButton);
-
 
         horizontalLayout->addWidget(optionsLayout);
 
@@ -326,11 +332,11 @@ public:
         horizontalLayout_6->setObjectName("horizontalLayout_6");
         horizontalWidget = new QWidget(navbar);
         horizontalWidget->setObjectName("horizontalWidget");
-        QSizePolicy sizePolicy4(QSizePolicy::Policy::Maximum, QSizePolicy::Policy::Preferred);
-        sizePolicy4.setHorizontalStretch(0);
-        sizePolicy4.setVerticalStretch(0);
-        sizePolicy4.setHeightForWidth(horizontalWidget->sizePolicy().hasHeightForWidth());
-        horizontalWidget->setSizePolicy(sizePolicy4);
+        QSizePolicy sizePolicy5(QSizePolicy::Policy::Maximum, QSizePolicy::Policy::Preferred);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(horizontalWidget->sizePolicy().hasHeightForWidth());
+        horizontalWidget->setSizePolicy(sizePolicy5);
         horizontalWidget->setStyleSheet(QString::fromUtf8("QPushButton{\n"
 "	border:0px;\n"
 "}"));
@@ -343,11 +349,11 @@ public:
 
         nextFolderButton = new QPushButton(horizontalWidget);
         nextFolderButton->setObjectName("nextFolderButton");
-        QSizePolicy sizePolicy5(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Minimum);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(0);
-        sizePolicy5.setHeightForWidth(nextFolderButton->sizePolicy().hasHeightForWidth());
-        nextFolderButton->setSizePolicy(sizePolicy5);
+        QSizePolicy sizePolicy6(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Minimum);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(nextFolderButton->sizePolicy().hasHeightForWidth());
+        nextFolderButton->setSizePolicy(sizePolicy6);
 
         horizontalLayout_7->addWidget(nextFolderButton);
 
@@ -384,11 +390,11 @@ public:
 
         searchLineEdit = new QTextEdit(breadcrumbsLayout_2);
         searchLineEdit->setObjectName("searchLineEdit");
-        QSizePolicy sizePolicy6(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Ignored);
-        sizePolicy6.setHorizontalStretch(0);
-        sizePolicy6.setVerticalStretch(0);
-        sizePolicy6.setHeightForWidth(searchLineEdit->sizePolicy().hasHeightForWidth());
-        searchLineEdit->setSizePolicy(sizePolicy6);
+        QSizePolicy sizePolicy7(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Ignored);
+        sizePolicy7.setHorizontalStretch(0);
+        sizePolicy7.setVerticalStretch(0);
+        sizePolicy7.setHeightForWidth(searchLineEdit->sizePolicy().hasHeightForWidth());
+        searchLineEdit->setSizePolicy(sizePolicy7);
 
         breadcrumbsLayout->addWidget(searchLineEdit);
 
@@ -412,44 +418,80 @@ public:
 
         gridLayout->addWidget(navbar, 1, 0, 1, 1);
 
-        splitter = new QSplitter(centralwidget);
-        splitter->setObjectName("splitter");
-        splitter->setOrientation(Qt::Orientation::Horizontal);
-        splitter->setChildrenCollapsible(false);
-        navMenu = new QWidget(splitter);
-        navMenu->setObjectName("navMenu");
-        QSizePolicy sizePolicy7(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
-        sizePolicy7.setHorizontalStretch(0);
-        sizePolicy7.setVerticalStretch(0);
-        sizePolicy7.setHeightForWidth(navMenu->sizePolicy().hasHeightForWidth());
-        navMenu->setSizePolicy(sizePolicy7);
-        navMenu->setMaximumSize(QSize(400, 16777215));
-        navMenu->setBaseSize(QSize(300, 0));
-        navMenu->setStyleSheet(QString::fromUtf8("background-color: rgb(53, 53, 53);"));
-        verticalLayout_2 = new QVBoxLayout(navMenu);
-        verticalLayout_2->setObjectName("verticalLayout_2");
-        splitter->addWidget(navMenu);
-        verticalWidget = new QWidget(splitter);
+        verticalWidget = new QWidget(centralwidget);
         verticalWidget->setObjectName("verticalWidget");
-        sizePolicy7.setHeightForWidth(verticalWidget->sizePolicy().hasHeightForWidth());
-        verticalWidget->setSizePolicy(sizePolicy7);
-        verticalLayout_3 = new QVBoxLayout(verticalWidget);
-        verticalLayout_3->setObjectName("verticalLayout_3");
-        treeWidget = new QTreeWidget(verticalWidget);
+        verticalLayout_2 = new QVBoxLayout(verticalWidget);
+        verticalLayout_2->setObjectName("verticalLayout_2");
+        widget = new QWidget(verticalWidget);
+        widget->setObjectName("widget");
+        horizontalLayout_3 = new QHBoxLayout(widget);
+        horizontalLayout_3->setObjectName("horizontalLayout_3");
+        verticalWidget_2 = new QWidget(widget);
+        verticalWidget_2->setObjectName("verticalWidget_2");
+        sizePolicy5.setHeightForWidth(verticalWidget_2->sizePolicy().hasHeightForWidth());
+        verticalWidget_2->setSizePolicy(sizePolicy5);
+        verticalWidget_2->setMinimumSize(QSize(150, 0));
+        verticalWidget_2->setBaseSize(QSize(200, 0));
+        verticalWidget_2->setLayoutDirection(Qt::LayoutDirection::LeftToRight);
+        verticalWidget_2->setStyleSheet(QString::fromUtf8(""));
+        verticalLayout_9 = new QVBoxLayout(verticalWidget_2);
+        verticalLayout_9->setSpacing(11);
+        verticalLayout_9->setObjectName("verticalLayout_9");
+        verticalLayout_9->setContentsMargins(11, 11, 11, 11);
+        recentFilesButton = new QPushButton(verticalWidget_2);
+        recentFilesButton->setObjectName("recentFilesButton");
+        recentFilesButton->setStyleSheet(QString::fromUtf8("padding: 10px;\n"
+"text-align: left"));
+
+        verticalLayout_9->addWidget(recentFilesButton);
+
+        favoritesButton = new QPushButton(verticalWidget_2);
+        favoritesButton->setObjectName("favoritesButton");
+        favoritesButton->setStyleSheet(QString::fromUtf8("padding:10px;\n"
+"text-align:left"));
+
+        verticalLayout_9->addWidget(favoritesButton);
+
+        driveTable = new QTableWidget(verticalWidget_2);
+        if (driveTable->columnCount() < 1)
+            driveTable->setColumnCount(1);
+        driveTable->setObjectName("driveTable");
+        driveTable->setColumnCount(1);
+
+        verticalLayout_9->addWidget(driveTable);
+
+
+        horizontalLayout_3->addWidget(verticalWidget_2, 0, Qt::AlignmentFlag::AlignTop);
+
+        verticalWidget_3 = new QWidget(widget);
+        verticalWidget_3->setObjectName("verticalWidget_3");
+        QSizePolicy sizePolicy8(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
+        sizePolicy8.setHorizontalStretch(0);
+        sizePolicy8.setVerticalStretch(0);
+        sizePolicy8.setHeightForWidth(verticalWidget_3->sizePolicy().hasHeightForWidth());
+        verticalWidget_3->setSizePolicy(sizePolicy8);
+        verticalLayout_8 = new QVBoxLayout(verticalWidget_3);
+        verticalLayout_8->setObjectName("verticalLayout_8");
+        treeWidget_2 = new QTreeWidget(verticalWidget_3);
         QTreeWidgetItem *__qtreewidgetitem = new QTreeWidgetItem();
         __qtreewidgetitem->setText(0, QString::fromUtf8("1"));
-        treeWidget->setHeaderItem(__qtreewidgetitem);
-        treeWidget->setObjectName("treeWidget");
-        sizePolicy7.setHeightForWidth(treeWidget->sizePolicy().hasHeightForWidth());
-        treeWidget->setSizePolicy(sizePolicy7);
-        treeWidget->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
-        treeWidget->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
+        treeWidget_2->setHeaderItem(__qtreewidgetitem);
+        treeWidget_2->setObjectName("treeWidget_2");
+        sizePolicy8.setHeightForWidth(treeWidget_2->sizePolicy().hasHeightForWidth());
+        treeWidget_2->setSizePolicy(sizePolicy8);
+        treeWidget_2->setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+        treeWidget_2->setSelectionMode(QAbstractItemView::SelectionMode::ExtendedSelection);
 
-        verticalLayout_3->addWidget(treeWidget);
+        verticalLayout_8->addWidget(treeWidget_2);
 
-        splitter->addWidget(verticalWidget);
 
-        gridLayout->addWidget(splitter, 2, 0, 1, 1);
+        horizontalLayout_3->addWidget(verticalWidget_3);
+
+
+        verticalLayout_2->addWidget(widget);
+
+
+        gridLayout->addWidget(verticalWidget, 2, 0, 1, 1);
 
         TrueExplorer->setCentralWidget(centralwidget);
         menubar = new QMenuBar(TrueExplorer);
@@ -475,18 +517,19 @@ public:
         sizeSortRadioButton->setText(QCoreApplication::translate("TrueExplorer", "By size", nullptr));
         timeSortRadioButton->setText(QCoreApplication::translate("TrueExplorer", "By time of creation", nullptr));
         label->setText(QCoreApplication::translate("TrueExplorer", "Sort : ", nullptr));
-        listViewRadioButton->setText(QCoreApplication::translate("TrueExplorer", "List Format", nullptr));
-        tileViewRadioButton->setText(QCoreApplication::translate("TrueExplorer", "Tile Format", nullptr));
-        label_2->setText(QCoreApplication::translate("TrueExplorer", "View :", nullptr));
+        label_2->setText(QCoreApplication::translate("TrueExplorer", "Search in : ", nullptr));
+        currentDirRadioButton->setText(QCoreApplication::translate("TrueExplorer", "In current directory", nullptr));
+        filebaseRadioButton->setText(QCoreApplication::translate("TrueExplorer", "In entire filebase", nullptr));
         label_3->setText(QCoreApplication::translate("TrueExplorer", "Graphics :", nullptr));
         barGraphRadioButton->setText(QCoreApplication::translate("TrueExplorer", "Bar Graph", nullptr));
         viewIndexToolButton->setText(QCoreApplication::translate("TrueExplorer", "View Index", nullptr));
-        settingsToolButton->setText(QCoreApplication::translate("TrueExplorer", "Settings", nullptr));
         prevFolderButton->setText(QString());
         nextFolderButton->setText(QString());
         prevDirectoryButton->setText(QString());
         reloadButton->setText(QString());
         searchButton->setText(QCoreApplication::translate("TrueExplorer", "Search", nullptr));
+        recentFilesButton->setText(QCoreApplication::translate("TrueExplorer", "Recent Files", nullptr));
+        favoritesButton->setText(QCoreApplication::translate("TrueExplorer", "Favorites", nullptr));
     } // retranslateUi
 
 };

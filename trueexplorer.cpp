@@ -1,7 +1,6 @@
 #include "trueexplorer.h"
 #include "./ui_trueexplorer.h"
 #include "contextmenuactions.h"
-#include "CollapsibleSidebar.h"
 #include <QIcon>
 #include <QDir>
 #include <QDesktopServices>
@@ -14,44 +13,48 @@
 #include <QKeyEvent>
 #include <QFile>
 #include <QFileDialog>
+#include "databaseviewer.h"
 #include "indexinghandler.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QTreeWidgetItem>
+#include <qprocess.h>
 #include <qstandardpaths.h>
 #include <QLineEdit>
 #include <QVBoxLayout>
-
+#include <QSqlRecord>
+#include <QClipboard>
+#include <QGuiApplication>
 
 TrueExplorer::TrueExplorer(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::TrueExplorer)
-    // ,dir(QDir::rootPath())
+    ,dir(QDir::rootPath())
 {
     ui->setupUi(this);
     indexinghandler::checkAndInitializeIndexing();
+    startFileMonitoringProcess();
     QFileIconProvider iconProvider;
     IconSetup();
     ui->nameSortRadioButton->setChecked(true);
-    ui->listViewRadioButton->setChecked(true);
-    ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
-    dir.setPath("C:/Users/aksha/Projects/temp_folder");
+    ui->treeWidget_2->setContextMenuPolicy(Qt::CustomContextMenu);
+    populateDrives();
+
+    connect(ui->driveTable, &QTableWidget::cellClicked,
+            this, &TrueExplorer::onDriveClicked);
 
     connect(ui->nameSortRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
     connect(ui->timeSortRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
     connect(ui->sizeSortRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
     connect(ui->extensionSortRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
-    connect(ui->tileViewRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
-    connect(ui->listViewRadioButton, &QRadioButton::clicked, this, &TrueExplorer::reloadDirectory);
-
-    QVBoxLayout *layout = new QVBoxLayout(ui->navMenu);
-    layout->setContentsMargins(0, 0, 0, 0);
-
-    CollapsibleSidebar *sidebar = new CollapsibleSidebar();
-    layout->addWidget(sidebar);
-
+    connect(ui->barGraphRadioButton, &QRadioButton::clicked, this, [this]() {
+        if (!ui->sizeSortRadioButton->isChecked())
+            ui->sizeSortRadioButton->setChecked(true);
+        reloadDirectory();
+    });
     loadDirectory(dir.path());
+
 
 }
 
@@ -116,69 +119,233 @@ void TrueExplorer::updateBreadcrumbs(const QString &path)
     ui->breadcrumbWidget->update();
 }
 
-void TrueExplorer::loadDirectory(const QString &path) {
-    // if (path.isEmpty() || path == dir.path()) return;
 
+
+void TrueExplorer::loadDirectory(const QString &path) {
     qDebug() << "Loading directory:" << path;
+
+    QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QString favouritesPath = appDataPath + "/favourites.txt";
+    QString recentFilesPath = appDataPath + "/recentfiles.txt";
+
+    if (path == favouritesPath || path == recentFilesPath) {
+        QFile file(path);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            qWarning() << "Could not open file:" << path;
+            return;
+        }
+
+        ui->treeWidget_2->clear();
+        ui->treeWidget_2->setColumnCount(3);
+        ui->treeWidget_2->setHeaderLabels(QStringList() << "Name" << "Size" << "Last Modified");
+        ui->treeWidget_2->setColumnWidth(0, 300);
+        updateBreadcrumbs(path);
+
+        QTextStream in(&file);
+        QFileIconProvider iconProvider;
+        QStringList lines;
+
+        while (!in.atEnd()) {
+            QString line = in.readLine().trimmed();
+            if (!line.isEmpty()) lines.append(line);
+        }
+
+        std::reverse(lines.begin(), lines.end());
+
+        for (const QString &line : lines) {
+            QFileInfo fileInfo(line);
+            if (!fileInfo.exists()) continue;
+
+            QTreeWidgetItem *item = new QTreeWidgetItem(ui->treeWidget_2);
+            item->setText(0, fileInfo.fileName());
+            item->setIcon(0, iconProvider.icon(fileInfo));
+            item->setData(0, Qt::UserRole, fileInfo.absoluteFilePath());
+            item->setText(1, fileInfo.isDir() ? "-" : QLocale().formattedDataSize(fileInfo.size()));
+            item->setText(2, fileInfo.lastModified().toString("yyyy-MM-dd hh:mm"));
+        }
+
+        file.close();
+        return;
+    }
+
     dir.setPath(path);
     if (historyIndex == -1 || !directoryHistory.contains(path)) {
-        if (historyIndex < directoryHistory.size() - 1) {
-            // If navigating after going Back, trim the forward history
-            directoryHistory = directoryHistory.mid(0, historyIndex + 1);
-        }
         directoryHistory.append(path);
-        if (directoryHistory.size() > 10) {
-            directoryHistory.removeFirst();  // Keep only the last 10 entries
-        }
-
+        if (directoryHistory.size() > 20) directoryHistory.removeFirst();
         historyIndex = directoryHistory.size() - 1;
     }
 
     qDebug() << directoryHistory;
-    // Clear and setup treeWidget
-    ui->treeWidget->clear();
-    ui->treeWidget->setColumnCount(1);
-    ui->treeWidget->setHeaderLabel("Name");
+
+    ui->treeWidget_2->clear();
+    ui->treeWidget_2->setColumnCount(3);
+    ui->treeWidget_2->setHeaderLabels(QStringList() << "Name" << "Size" << "Last Modified");
+    ui->treeWidget_2->setColumnWidth(0, 300);
 
     QDir dir(path);
     if (!dir.exists()) return;
 
-    // Handle tile view mode
-    if (ui->tileViewRadioButton->isChecked()) {
-        ui->treeWidget->setHeaderHidden(true);
-        ui->treeWidget->setRootIsDecorated(false);
-        ui->treeWidget->setIconSize(QSize(64, 64));
-    }
-
     updateBreadcrumbs(path);
     QFileIconProvider iconProvider;
 
-    // Sorting logic
     QDir::SortFlags sortFlag = QDir::Name;
-    if (ui->nameSortRadioButton->isChecked()) {
-        sortFlag = QDir::Name;
-    } else if (ui->timeSortRadioButton->isChecked()) {
-        sortFlag = QDir::Time;
-    } else if (ui->sizeSortRadioButton->isChecked()) {
-        sortFlag = QDir::Size;
-    } else if (ui->extensionSortRadioButton->isChecked()) {
-        sortFlag = QDir::Type;
+    if (ui->nameSortRadioButton->isChecked()) sortFlag = QDir::Name;
+    else if (ui->timeSortRadioButton->isChecked()) sortFlag = QDir::Time;
+    else if (ui->extensionSortRadioButton->isChecked()) sortFlag = QDir::Type;
+
+    // Open SQLite DB
+    QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/file_index.db";
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "IndexConnection");
+    db.setDatabaseName(dbPath);
+
+    if (!db.open()) {
+        qWarning() << "Failed to open index database:" << db.lastError().text();
     }
 
-    // Load directory items
-    QFileInfoList entries = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries, sortFlag);
+    QSqlQuery query(db);
+    QFileInfoList entries;
+
+    // Manual size sort using DB
+    if (ui->sizeSortRadioButton->isChecked()) {
+        QFileInfoList rawEntries = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden, QDir::Name);
+        QVector<QPair<QFileInfo, qint64>> sizePairs;
+
+        for (const QFileInfo &entry : rawEntries) {
+            QString absPath = entry.absoluteFilePath();
+            qint64 size = 0;
+
+            if (entry.isDir()) {
+                query.prepare("SELECT size FROM directories WHERE path = ?");
+            } else {
+                query.prepare("SELECT size FROM files WHERE path = ?");
+            }
+
+            query.addBindValue(absPath);
+            if (query.exec() && query.next()) {
+                size = query.value(0).toLongLong();
+            } else {
+                size = entry.size();  // fallback
+            }
+
+            sizePairs.append(qMakePair(entry, size));
+        }
+
+        std::sort(sizePairs.begin(), sizePairs.end(), [](const auto &a, const auto &b) {
+            return a.second > b.second;  // Descending size
+        });
+
+        for (const auto &pair : sizePairs) {
+            entries.append(pair.first);
+        }
+    } else {
+        entries = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden, sortFlag);
+    }
+
+    qint64 maxSize = 1;
+    QVector<QPair<QTreeWidgetItem*, qint64>> sizedItems;
+
     for (const QFileInfo &entry : entries) {
-        QTreeWidgetItem *item = new QTreeWidgetItem(ui->treeWidget);
+        QString absPath = entry.absoluteFilePath();
+        qint64 size = 0;
+
+        if (entry.isDir()) {
+            query.prepare("SELECT size FROM directories WHERE path = ?");
+        } else {
+            query.prepare("SELECT size, modified FROM files WHERE path = ?");
+        }
+
+        query.addBindValue(absPath);
+        QString modDate;
+        if (query.exec() && query.next()) {
+            size = query.value(0).toLongLong();
+            if (!entry.isDir() && query.record().count() > 1)
+                modDate = query.value(1).toString();
+        } else {
+            size = entry.size();
+        }
+
+        QTreeWidgetItem *item = new QTreeWidgetItem(ui->treeWidget_2);
         item->setText(0, entry.fileName());
         item->setIcon(0, iconProvider.icon(entry));
-        item->setData(0, Qt::UserRole, entry.absoluteFilePath());
+        item->setData(0, Qt::UserRole, absPath);
+        item->setText(1, QLocale().formattedDataSize(size));
+        if (!entry.isDir())
+            item->setText(2, !modDate.isEmpty() ? QDateTime::fromString(modDate, Qt::ISODate).toString("yyyy-MM-dd hh:mm")
+                                                : entry.lastModified().toString("yyyy-MM-dd hh:mm"));
+        else
+            item->setText(2, "");
+
+        sizedItems.append(qMakePair(item, size));
+        if (size > maxSize) maxSize = size;
     }
+
+    // Apply Bar Graph background if selected
+    if (ui->barGraphRadioButton->isChecked()) {
+        for (auto &pair : sizedItems) {
+            QTreeWidgetItem *item = pair.first;
+            qint64 size = pair.second;
+
+            double ratio = static_cast<double>(size) / maxSize;
+            int percent = static_cast<int>(ratio * 100);
+
+            QLinearGradient gradient(0, 0, 1, 0);
+            gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
+            gradient.setColorAt(0, QColor("#3498db"));
+            gradient.setColorAt(ratio, QColor("#3498db"));
+            gradient.setColorAt(ratio + 0.001, QColor(53, 53, 53));  // Background fallback
+            gradient.setColorAt(1, QColor(53, 53, 53));
+
+            item->setBackground(0, QBrush(gradient));
+        }
+    }
+
+    db.close();
+    QSqlDatabase::removeDatabase("IndexConnection");
 }
 
-void TrueExplorer::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
+
+
+void TrueExplorer::on_treeWidget_2_itemDoubleClicked(QTreeWidgetItem *item, int column)
 {
     QString filePath = item->data(0, Qt::UserRole).toString();
     QFileInfo fileInfo(filePath);
+
+    if (fileInfo.isFile()) {
+        QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+        QDir().mkpath(appDataPath); // Ensure directory exists
+        QString recentFilePath = appDataPath + "/recentfiles.txt";
+
+        // Read all existing entries
+        QStringList lines;
+        QFile readFile(recentFilePath);
+        if (readFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(&readFile);
+            while (!in.atEnd()) {
+                QString line = in.readLine().trimmed();
+                if (!line.isEmpty()) lines.append(line);
+            }
+            readFile.close();
+        }
+
+        // Append the new path (remove if already exists to avoid duplication)
+        lines.removeAll(filePath);
+        lines.append(filePath);
+
+        // Keep only the last 30 entries
+        while (lines.size() > 30)
+            lines.removeFirst();
+
+        // Write updated list back to file
+        QFile writeFile(recentFilePath);
+        if (writeFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+            QTextStream out(&writeFile);
+            for (const QString &line : lines)
+                out << line << '\n';
+            writeFile.close();
+        }
+    }
+
+    // Navigate or open file
     if (fileInfo.isDir()) {
         loadDirectory(filePath);
     } else {
@@ -187,10 +354,9 @@ void TrueExplorer::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int co
     }
 }
 
-
-void TrueExplorer::on_treeWidget_customContextMenuRequested(const QPoint &pos)
+void TrueExplorer::on_treeWidget_2_customContextMenuRequested(const QPoint &pos)
 {
-    QList<QTreeWidgetItem *> selectedItems = ui->treeWidget->selectedItems();
+    QList<QTreeWidgetItem *> selectedItems = ui->treeWidget_2->selectedItems();
     if (selectedItems.isEmpty())
         return;
 
@@ -206,35 +372,59 @@ void TrueExplorer::on_treeWidget_customContextMenuRequested(const QPoint &pos)
     QAction *copyAction = new QAction("Copy", &contextMenu);
     QAction *pasteAction = new QAction("Paste", &contextMenu);
     QAction *deleteAction = new QAction("Delete", &contextMenu);
-    QAction *addToFavourites = new QAction("Add to Favourites", &contextMenu);
+    QAction *copyPathAction = new QAction("Copy Path", &contextMenu); // ← NEW ACTION
+    QAction *addorRemoveFavourites = new QAction("Add/Remove Favourites", &contextMenu);
     QAction *viewProperties = new QAction("View Properties", &contextMenu);
 
-    connect(cutAction, &QAction::triggered, this, [=]() { ContextMenuActions::cutFiles(clipboardPaths, cutMode, filePaths); });
-    connect(copyAction, &QAction::triggered, this, [=]() { ContextMenuActions::copyFiles(clipboardPaths, cutMode, filePaths); });
+    connect(cutAction, &QAction::triggered, this, [=]() {
+        ContextMenuActions::cutFiles(clipboardPaths, cutMode, filePaths);
+    });
+    connect(copyAction, &QAction::triggered, this, [=]() {
+        ContextMenuActions::copyFiles(clipboardPaths, cutMode, filePaths);
+    });
     connect(pasteAction, &QAction::triggered, this, [=]() {
         QTreeWidgetItem *targetItem = selectedItems.first();
         QString targetDir = targetItem->data(0, Qt::UserRole).toString();
-        if (!targetDir.isEmpty()) ContextMenuActions::pasteFiles(clipboardPaths, cutMode, targetDir);
+        if (!targetDir.isEmpty())
+            ContextMenuActions::pasteFiles(clipboardPaths, cutMode, targetDir);
     });
-    connect(deleteAction, &QAction::triggered, this, [=]() { ContextMenuActions::deleteFiles(filePaths); });
-    connect(addToFavourites, &QAction::triggered, this, [=]() { ContextMenuActions::addToFavourites(filePaths); });
-    connect(viewProperties, &QAction::triggered, this, [=]() { ContextMenuActions::viewProperties(filePaths); });
+    connect(deleteAction, &QAction::triggered, this, [=]() {
+        ContextMenuActions::deleteFiles(filePaths);
+    });
+    connect(addorRemoveFavourites, &QAction::triggered, this, [=]() {
+        ContextMenuActions::addorRemoveFavourites(filePaths);
+    });
+    connect(viewProperties, &QAction::triggered, this, [=]() {
+        ContextMenuActions::viewProperties(filePaths);
+    });
 
+    // 🔗 Connect Copy Path
+    connect(copyPathAction, &QAction::triggered, this, [=]() {
+        QClipboard *clipboard = QGuiApplication::clipboard();
+        clipboard->setText(filePaths.join("\n"));
+    });
+
+    // Add actions to context menu
     contextMenu.addAction(cutAction);
     contextMenu.addAction(copyAction);
     contextMenu.addAction(pasteAction);
     contextMenu.addAction(deleteAction);
-    contextMenu.addAction(addToFavourites);
+    contextMenu.addAction(copyPathAction);
+    contextMenu.addAction(addorRemoveFavourites);
     contextMenu.addAction(viewProperties);
 
-    contextMenu.exec(ui->treeWidget->mapToGlobal(pos));
+    contextMenu.exec(ui->treeWidget_2->mapToGlobal(pos));
 }
+
 
 void TrueExplorer::performSearch() {
     QString searchText = ui->searchLineEdit->toPlainText().trimmed();
-    if (searchText.isEmpty()) return;  // Ignore empty input
+    if (searchText.isEmpty()) return;
 
-    qDebug() << searchText;
+    qDebug() << "Search Text: " << searchText;
+
+    bool searchInCurrentDir = ui->currentDirRadioButton->isChecked();
+
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/file_index.db");
 
@@ -244,24 +434,34 @@ void TrueExplorer::performSearch() {
     }
 
     QSqlQuery query;
-    query.prepare("SELECT file_name, path, size FROM files WHERE file_name LIKE ?");
-    query.addBindValue("%" + searchText + "%");  // Fixed column name
+
+    if (searchInCurrentDir) {
+        QString currentDirPath = dir.absolutePath();
+        qDebug() << "Searching in current directory: " << currentDirPath;
+
+        query.prepare("SELECT file_name, path, size FROM files WHERE file_name LIKE ? AND path LIKE ?");
+        query.addBindValue("%" + searchText + "%");
+        query.addBindValue(currentDirPath + "/%");  // match subfiles
+    } else {
+        query.prepare("SELECT file_name, path, size FROM files WHERE file_name LIKE ?");
+        query.addBindValue("%" + searchText + "%");
+    }
 
     if (!query.exec()) {
-        qDebug() << "Query execution failed:" << query.lastError().text();
+        qDebug() << "Query failed:" << query.lastError().text();
         return;
     }
 
-    // Populate treeWidget with results
     populateTreeWidget(query);
 }
 
 
-void TrueExplorer::populateTreeWidget(QSqlQuery &query) {
-    ui->treeWidget->clear();  // Clear previous results
 
-    ui->treeWidget->setColumnCount(1);
-    ui->treeWidget->setHeaderLabel("Name");
+void TrueExplorer::populateTreeWidget(QSqlQuery &query) {
+    ui->treeWidget_2->clear();  // Clear previous results
+
+    ui->treeWidget_2->setColumnCount(1);
+    ui->treeWidget_2->setHeaderLabel("Name");
 
     QFileIconProvider iconProvider;
 
@@ -272,12 +472,12 @@ void TrueExplorer::populateTreeWidget(QSqlQuery &query) {
 
         QFileInfo fileInfo(path);
 
-        QTreeWidgetItem *item = new QTreeWidgetItem(ui->treeWidget);
+        QTreeWidgetItem *item = new QTreeWidgetItem(ui->treeWidget_2);
         item->setText(0, name);
         item->setIcon(0, iconProvider.icon(fileInfo)); // Assign appropriate file/folder icon
         item->setData(0, Qt::UserRole, path); // Store full path for reference
 
-        ui->treeWidget->addTopLevelItem(item);
+        ui->treeWidget_2->addTopLevelItem(item);
     }
 }
 
@@ -287,132 +487,37 @@ void TrueExplorer::testFunction(){
 }
 
 void TrueExplorer::keyPressEvent(QKeyEvent *event) {
+    QList<QTreeWidgetItem *> selectedItems = ui->treeWidget_2->selectedItems();
+    QStringList filePaths;
+    for (QTreeWidgetItem *item : selectedItems) {
+        filePaths.append(item->data(0, Qt::UserRole).toString());
+    }
+
     if (event->matches(QKeySequence::Copy)) {
-        copySelectedItems();
+        if (!filePaths.isEmpty())
+            ContextMenuActions::copyFiles(clipboardPaths, cutMode, filePaths);
+
     } else if (event->matches(QKeySequence::Cut)) {
-        cutSelectedItems();
+        if (!filePaths.isEmpty())
+            ContextMenuActions::cutFiles(clipboardPaths, cutMode, filePaths);
+
     } else if (event->matches(QKeySequence::Paste)) {
-        pasteItems();
+        QTreeWidgetItem *targetItem = ui->treeWidget_2->currentItem();
+        if (targetItem) {
+            QString targetDir = targetItem->data(0, Qt::UserRole).toString();
+            if (!targetDir.isEmpty())
+                ContextMenuActions::pasteFiles(clipboardPaths, cutMode, targetDir);
+        }
+
     } else if (event->key() == Qt::Key_Delete) {
-        deleteSelectedItems();
+        if (!filePaths.isEmpty())
+            ContextMenuActions::deleteFiles(filePaths);
+
     } else {
-        QMainWindow::keyPressEvent(event);  // Pass other key events to parent
+        QMainWindow::keyPressEvent(event);  // Forward to base class
     }
 }
 
-void TrueExplorer::copySelectedItems() {
-    clipboardPaths.clear();
-    for (QTreeWidgetItem *item : ui->treeWidget->selectedItems()) {
-        QString filePath = item->data(0, Qt::UserRole).toString();
-        clipboardPaths.append(filePath);
-    }
-    cutMode = false;  // Mark as copied, not cut
-}
-
-void TrueExplorer::cutSelectedItems() {
-    clipboardPaths.clear();
-    for (QTreeWidgetItem *item : ui->treeWidget->selectedItems()) {
-        clipboardPaths.append(item->data(0, Qt::UserRole).toString());
-    }
-    cutMode = true;
-}
-
-
-void TrueExplorer::pasteItems() {
-    if (clipboardPaths.isEmpty()) return;
-
-    for (const QString &srcPath : clipboardPaths) {
-        QFileInfo fileInfo(srcPath);
-        QString destPath = dir.absolutePath() + "/" + fileInfo.fileName();
-
-        // Handle duplicate filenames
-        int count = 1;
-        while (QFile::exists(destPath) || QDir(destPath).exists()) {
-            destPath = dir.absolutePath() + QString("/%1_copy%2.%3")
-            .arg(fileInfo.completeBaseName())
-                .arg(count++)
-                .arg(fileInfo.suffix());
-        }
-
-        if (fileInfo.isDir()) {
-            // Copy/Move a directory
-            QDir sourceDir(srcPath);
-            QDir targetDir(destPath);
-
-            if (sourceDir.exists()) {
-                if (copyDirectory(srcPath, destPath)) {
-                    qDebug() << "Copied Folder:" << srcPath << "->" << destPath;
-                    if (cutMode) sourceDir.removeRecursively();
-                } else {
-                    QMessageBox::warning(this, "Error", "Failed to copy folder: " + srcPath);
-                }
-            }
-        } else {
-            // Copy/Move a file
-            if (cutMode) {
-                if (QFile::rename(srcPath, destPath)) {
-                    qDebug() << "Moved:" << srcPath << "->" << destPath;
-                } else {
-                    QMessageBox::warning(this, "Error", "Failed to move " + srcPath);
-                }
-            } else {
-                if (QFile::copy(srcPath, destPath)) {
-                    qDebug() << "Copied:" << srcPath << "->" << destPath;
-                } else {
-                    QMessageBox::warning(this, "Error", "Failed to copy " + srcPath);
-                }
-            }
-        }
-    }
-
-    // Clear clipboard if cut
-    if (cutMode) clipboardPaths.clear();
-
-    // Reload UI
-    loadDirectory(dir.absolutePath());
-}
-
-void TrueExplorer::deleteSelectedItems() {
-    QList<QTreeWidgetItem*> selectedItems = ui->treeWidget->selectedItems();
-    if (selectedItems.isEmpty()) return;
-
-    if (QMessageBox::question(this, "Delete", "Are you sure?") == QMessageBox::Yes) {
-        for (QTreeWidgetItem *item : selectedItems) {
-            QString filePath = item->data(0, Qt::UserRole).toString();
-            QFile file(filePath);
-            if (file.exists() && !file.remove()) {
-                QMessageBox::warning(this, "Error", "Failed to delete " + filePath);
-            }
-            delete item;  // Remove from UI
-        }
-    }
-}
-
-bool TrueExplorer::copyDirectory(const QString &source, const QString &destination) {
-    QDir sourceDir(source);
-    if (!sourceDir.exists()) return false;
-
-    QDir destinationDir(destination);
-    if (!destinationDir.exists()) {
-        if (!destinationDir.mkpath(destination)) return false;
-    }
-
-    QStringList files = sourceDir.entryList(QDir::Files);
-    for (const QString &file : files) {
-        QString srcFilePath = source + "/" + file;
-        QString destFilePath = destination + "/" + file;
-        if (!QFile::copy(srcFilePath, destFilePath)) return false;
-    }
-
-    QStringList subDirs = sourceDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-    for (const QString &subDir : subDirs) {
-        QString srcSubDirPath = source + "/" + subDir;
-        QString destSubDirPath = destination + "/" + subDir;
-        if (!copyDirectory(srcSubDirPath, destSubDirPath)) return false;
-    }
-
-    return true;
-}
 
 void TrueExplorer::on_prevDirectoryButton_clicked()
 {
@@ -465,7 +570,7 @@ void TrueExplorer::on_newFileButton_clicked()
 
 void TrueExplorer::renameSelectedItem()
 {
-     QTreeWidgetItem *item = ui->treeWidget->currentItem();
+     QTreeWidgetItem *item = ui->treeWidget_2->currentItem();
     if (!item) return;
 
     QString oldName = item->text(0);
@@ -487,53 +592,8 @@ void TrueExplorer::renameSelectedItem()
     }
 }
 
-void TrueExplorer::deleteSelectedItem() {
-    QTreeWidgetItem *item = ui->treeWidget->currentItem();
-    if (!item) return;
 
-    QString filePath = item->data(0, Qt::UserRole).toString();
-    QFileInfo fileInfo(filePath);
 
-    if (QMessageBox::question(this, "Delete", "Are you sure you want to delete this?") == QMessageBox::Yes) {
-        bool success = false;
-
-        if (fileInfo.isDir()) {
-            QDir dir(filePath);
-            success = deleteFolderContents(dir); // Custom function to remove contents
-            if (success) {
-                success = dir.rmdir(filePath); // Remove empty folder
-            }
-        } else {
-            success = QFile::remove(filePath); // Remove file
-        }
-
-        if (success) {
-            delete item; // Remove from UI
-            qDebug() << "Deleted:" << filePath;
-        } else {
-            QMessageBox::warning(this, "Error", "Failed to delete " + filePath);
-        }
-    }
-}
-
-bool TrueExplorer::deleteFolderContents(QDir &dir) {
-    bool success = true;
-
-    // Get all entries inside the folder
-    QFileInfoList entries = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries);
-    for (const QFileInfo &entry : entries) {
-        if (entry.isDir()) {
-            QDir subDir(entry.filePath());
-            success = deleteFolderContents(subDir) && subDir.rmdir(entry.filePath());
-        } else {
-            success = QFile::remove(entry.filePath());
-        }
-
-        if (!success) break;
-    }
-
-    return success;
-}
 
 void TrueExplorer::on_newFolderButton_clicked()
 {
@@ -588,6 +648,8 @@ void TrueExplorer::IconSetup() {
     QIcon newFileButtonIcon(":/images/images/new_file.png");
     QIcon newFolderButtonIcon(":/images/images/new_folder.png");
     QIcon settingButtonIcon(":/images/images/settings.png");
+    QIcon quickAccess(":/images/images/quick_access_icon.png");
+    QIcon favoritesIcon(":/images/images/star.png");
 
     ui->newFileButton->setIcon(newFileButtonIcon);
     ui->newFileButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -601,9 +663,9 @@ void TrueExplorer::IconSetup() {
     ui->viewIndexToolButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     ui->viewIndexToolButton->setIconSize(QSize(70, 70));
 
-    ui->settingsToolButton->setIcon(settingButtonIcon);
-    ui->settingsToolButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    ui->settingsToolButton->setIconSize(QSize(70, 70));
+    ui->recentFilesButton->setIcon(quickAccess);
+
+    ui->favoritesButton->setIcon(favoritesIcon);
 
     ui->prevFolderButton->setIcon(QIcon(":/images/images/back_arrow.png"));
     ui->nextFolderButton->setIcon(QIcon(":/images/images/foward_arrow.png"));
@@ -638,5 +700,80 @@ void TrueExplorer::on_searchButton_clicked()
 void TrueExplorer::on_searchLineEdit_textChanged()
 {
     performSearch();
+}
+
+void TrueExplorer::populateDrives() {
+    QFileInfoList driveList = dir.drives();
+
+    ui->driveTable->setRowCount(driveList.size());
+    ui->driveTable->setColumnCount(1);
+    ui->driveTable->setHorizontalHeaderLabels(QStringList() << "Drives:");
+
+    for (int i = 0; i < driveList.size(); ++i) {
+        QString drivePath = driveList[i].absoluteFilePath();
+
+        // Create item with icon and text
+        QTableWidgetItem *item = new QTableWidgetItem(drivePath);
+        item->setIcon(QIcon::fromTheme("drive-harddisk")); // Or use custom icon
+        item->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        item->setFlags(item->flags() & ~Qt::ItemIsEditable);  // Read-only
+
+        ui->driveTable->setItem(i, 0, item);
+    }
+
+    // Layout tweaks
+    ui->driveTable->horizontalHeader()->setStretchLastSection(true);
+    ui->driveTable->verticalHeader()->setVisible(false);
+    ui->driveTable->horizontalHeaderItem(0)->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+}
+
+void TrueExplorer::onDriveClicked(int row, int column) {
+    QTableWidgetItem *item = ui->driveTable->item(row, column);
+    if (item) {
+        QString drivePath = item->text();
+        loadDirectory(drivePath); // 🔄 Pass the path
+    }
+}
+
+void TrueExplorer::on_favoritesButton_clicked()
+{
+    QString filePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/favourites.txt";
+    loadDirectory(filePath);
+}
+
+
+void TrueExplorer::on_viewIndexToolButton_clicked()
+{
+    /* QString filePath = QStandardPaths::AppDataLocation + "/file_index.db";*/ // Change this to your actual file path
+    QString filePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/file_index.db";
+
+    if (!QFile::exists(filePath)) {
+        QMessageBox::warning(this, "File Not Found", "The specified database file was not found.");
+        return;
+    }
+
+    databaseviewer *viewer = new databaseviewer(filePath, this);
+    viewer->exec(); // or viewer->show(); for modeless window
+}
+
+
+void TrueExplorer::on_recentFilesButton_clicked()
+{
+    QString filePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/recentfiles.txt";
+    loadDirectory(filePath);
+}
+
+
+void TrueExplorer::startFileMonitoringProcess() {
+    QString exePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/monitor.exe";
+
+    // Start the process in detached mode
+    bool success = QProcess::startDetached(exePath);
+
+    if (success) {
+        qDebug() << "Detached process started successfully.";
+    } else {
+        qDebug() << "Failed to start detached process.";
+    }
 }
 

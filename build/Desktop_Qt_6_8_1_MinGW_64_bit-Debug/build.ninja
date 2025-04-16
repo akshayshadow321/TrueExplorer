@@ -89,9 +89,9 @@ build CMakeFiles/TrueExplorer.dir/indexinghandler.cpp.obj: CXX_COMPILER__TrueExp
   OBJECT_DIR = CMakeFiles\TrueExplorer.dir
   OBJECT_FILE_DIR = CMakeFiles\TrueExplorer.dir
 
-build CMakeFiles/TrueExplorer.dir/CollapsibleSidebar.cpp.obj: CXX_COMPILER__TrueExplorer_unscanned_Debug C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/CollapsibleSidebar.cpp || cmake_object_order_depends_target_TrueExplorer
+build CMakeFiles/TrueExplorer.dir/databaseviewer.cpp.obj: CXX_COMPILER__TrueExplorer_unscanned_Debug C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/databaseviewer.cpp || cmake_object_order_depends_target_TrueExplorer
   DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NEEDS_QMAIN -DQT_SQL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
-  DEP_FILE = CMakeFiles\TrueExplorer.dir\CollapsibleSidebar.cpp.obj.d
+  DEP_FILE = CMakeFiles\TrueExplorer.dir\databaseviewer.cpp.obj.d
   FLAGS = -DQT_QML_DEBUG -g -std=gnu++17 -fdiagnostics-color=always
   INCLUDES = -I"C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/TrueExplorer_autogen/include" -isystem C:/Qt/6.8.1/mingw_64/include/QtCore -isystem C:/Qt/6.8.1/mingw_64/include -isystem C:/Qt/6.8.1/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.8.1/mingw_64/include/QtWidgets -isystem C:/Qt/6.8.1/mingw_64/include/QtGui -isystem C:/Qt/6.8.1/mingw_64/include/QtSql
   OBJECT_DIR = CMakeFiles\TrueExplorer.dir
@@ -113,7 +113,7 @@ build CMakeFiles/TrueExplorer.dir/TrueExplorer_autogen/EWIEGA46WW/qrc_icons.cpp.
 #############################################
 # Link the executable TrueExplorer.exe
 
-build TrueExplorer.exe: CXX_EXECUTABLE_LINKER__TrueExplorer_Debug CMakeFiles/TrueExplorer.dir/TrueExplorer_autogen/mocs_compilation.cpp.obj CMakeFiles/TrueExplorer.dir/main.cpp.obj CMakeFiles/TrueExplorer.dir/trueexplorer.cpp.obj CMakeFiles/TrueExplorer.dir/contextmenuactions.cpp.obj CMakeFiles/TrueExplorer.dir/indexinghandler.cpp.obj CMakeFiles/TrueExplorer.dir/CollapsibleSidebar.cpp.obj CMakeFiles/TrueExplorer.dir/TrueExplorer_autogen/EWIEGA46WW/qrc_icons.cpp.obj | C$:/Qt/6.8.1/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.8.1/mingw_64/lib/libQt6Sql.a C$:/Qt/6.8.1/mingw_64/lib/libQt6Gui.a C$:/Qt/6.8.1/mingw_64/lib/libQt6Core.a C$:/Qt/6.8.1/mingw_64/lib/libQt6EntryPoint.a || TrueExplorer_autogen TrueExplorer_autogen_timestamp_deps
+build TrueExplorer.exe: CXX_EXECUTABLE_LINKER__TrueExplorer_Debug CMakeFiles/TrueExplorer.dir/TrueExplorer_autogen/mocs_compilation.cpp.obj CMakeFiles/TrueExplorer.dir/main.cpp.obj CMakeFiles/TrueExplorer.dir/trueexplorer.cpp.obj CMakeFiles/TrueExplorer.dir/contextmenuactions.cpp.obj CMakeFiles/TrueExplorer.dir/indexinghandler.cpp.obj CMakeFiles/TrueExplorer.dir/databaseviewer.cpp.obj CMakeFiles/TrueExplorer.dir/TrueExplorer_autogen/EWIEGA46WW/qrc_icons.cpp.obj | C$:/Qt/6.8.1/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.8.1/mingw_64/lib/libQt6Sql.a C$:/Qt/6.8.1/mingw_64/lib/libQt6Gui.a C$:/Qt/6.8.1/mingw_64/lib/libQt6Core.a C$:/Qt/6.8.1/mingw_64/lib/libQt6EntryPoint.a || TrueExplorer_autogen TrueExplorer_autogen_timestamp_deps
   FLAGS = -DQT_QML_DEBUG -g
   LINK_FLAGS = -mwindows
   LINK_LIBRARIES = C:/Qt/6.8.1/mingw_64/lib/libQt6Widgets.a  C:/Qt/6.8.1/mingw_64/lib/libQt6Sql.a  C:/Qt/6.8.1/mingw_64/lib/libQt6Gui.a  -ld3d11  -ldxgi  -ldxguid  -ld3d12  C:/Qt/6.8.1/mingw_64/lib/libQt6Core.a  -lmpr  -luserenv  -lmingw32  C:/Qt/6.8.1/mingw_64/lib/libQt6EntryPoint.a  -lshell32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
@@ -200,7 +200,7 @@ build TrueExplorer_autogen_timestamp_deps: phony
 #############################################
 # Utility command for TrueExplorer_autogen
 
-build TrueExplorer_autogen: phony CMakeFiles/TrueExplorer_autogen TrueExplorer_autogen/include/ui_trueexplorer.h TrueExplorer_autogen/timestamp TrueExplorer_autogen/mocs_compilation.cpp TrueExplorer_autogen_timestamp_deps
+build TrueExplorer_autogen: phony CMakeFiles/TrueExplorer_autogen TrueExplorer_autogen/include/ui_trueexplorer.h TrueExplorer_autogen/include/ui_databaseviewer.h TrueExplorer_autogen/timestamp TrueExplorer_autogen/mocs_compilation.cpp TrueExplorer_autogen_timestamp_deps
 
 
 #############################################
@@ -217,7 +217,7 @@ build TrueExplorer_autogen/timestamp TrueExplorer_autogen/mocs_compilation.cpp |
 #############################################
 # Custom command for TrueExplorer_autogen\EWIEGA46WW\qrc_icons.cpp
 
-build TrueExplorer_autogen/EWIEGA46WW/qrc_icons.cpp | ${cmake_ninja_workdir}TrueExplorer_autogen/EWIEGA46WW/qrc_icons.cpp: CUSTOM_COMMAND C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/icons.qrc CMakeFiles/TrueExplorer_autogen.dir/AutoRcc_icons_EWIEGA46WW_Info.json C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/new_file.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/back_arrow.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/new_folder.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/settings.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/reload.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/foward_arrow.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/up_arrow.png C$:/Qt/6.8.1/mingw_64/bin/rcc.exe C$:/Qt/6.8.1/mingw_64/bin/rcc.exe || TrueExplorer_autogen TrueExplorer_autogen_timestamp_deps
+build TrueExplorer_autogen/EWIEGA46WW/qrc_icons.cpp | ${cmake_ninja_workdir}TrueExplorer_autogen/EWIEGA46WW/qrc_icons.cpp: CUSTOM_COMMAND C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/icons.qrc CMakeFiles/TrueExplorer_autogen.dir/AutoRcc_icons_EWIEGA46WW_Info.json C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/new_file.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/back_arrow.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/new_folder.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/settings.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/star.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/reload.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/quick_access_icon.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/foward_arrow.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/up_arrow.png C$:/Users/aksha/College$ Stuff/QT/TrueExplorer/images/Logo.png C$:/Qt/6.8.1/mingw_64/bin/rcc.exe C$:/Qt/6.8.1/mingw_64/bin/rcc.exe || TrueExplorer_autogen TrueExplorer_autogen_timestamp_deps
   COMMAND = C:\Windows\system32\cmd.exe /C "cd /D "C:\Users\aksha\College Stuff\QT\TrueExplorer\build\Desktop_Qt_6_8_1_MinGW_64_bit-Debug" && C:\Qt\Tools\CMake_64\bin\cmake.exe -E cmake_autorcc "C:/Users/aksha/College Stuff/QT/TrueExplorer/build/Desktop_Qt_6_8_1_MinGW_64_bit-Debug/CMakeFiles/TrueExplorer_autogen.dir/AutoRcc_icons_EWIEGA46WW_Info.json" Debug"
   DESC = Automatic RCC for icons.qrc
   restat = 1
@@ -226,7 +226,7 @@ build TrueExplorer_autogen/EWIEGA46WW/qrc_icons.cpp | ${cmake_ninja_workdir}True
 #############################################
 # Phony custom command for CMakeFiles\TrueExplorer_autogen
 
-build CMakeFiles/TrueExplorer_autogen TrueExplorer_autogen/include/ui_trueexplorer.h | ${cmake_ninja_workdir}CMakeFiles/TrueExplorer_autogen ${cmake_ninja_workdir}TrueExplorer_autogen/include/ui_trueexplorer.h: phony TrueExplorer_autogen/timestamp || TrueExplorer_autogen_timestamp_deps
+build CMakeFiles/TrueExplorer_autogen TrueExplorer_autogen/include/ui_trueexplorer.h TrueExplorer_autogen/include/ui_databaseviewer.h | ${cmake_ninja_workdir}CMakeFiles/TrueExplorer_autogen ${cmake_ninja_workdir}TrueExplorer_autogen/include/ui_trueexplorer.h ${cmake_ninja_workdir}TrueExplorer_autogen/include/ui_databaseviewer.h: phony TrueExplorer_autogen/timestamp || TrueExplorer_autogen_timestamp_deps
 
 # =============================================================================
 # Target aliases.

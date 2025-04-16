@@ -148,28 +148,35 @@ qint64 indexinghandler::getDirectorySize(const QString &directoryPath) {
     return size;
 }
 
-void indexinghandler::recurisveSelectiveFolderFunc(const QString &directoryPath, QSqlQuery &query, int counter){
-    if (counter <= 0){
-        return;
-    }
-    qDebug() << counter;
+void indexinghandler::recurisveSelectiveFolderFunc(const QString &directoryPath, QSqlQuery &query, int counter) {
+    if (counter <= 0) return;
+
+    qDebug() << "Recursing into:" << directoryPath << " | Depth left:" << counter;
+
     QStringList excludedFolders = {
         "node_modules", "venv", ".venv", "__pycache__", ".git", ".svn", ".hg",
         "build", "dist", "out", "target", "bin", "obj", ".gradle", ".idea", ".vs", ".vscode",
         "logs", "Windows", "System32", "SysWOW64", "Temp", "Library", "Application Support",
         "Trash", "Backup", "Old", "Cache"
     };
+
     QDir dir(directoryPath);
+
+    qint64 currentFolderSize = getDirectorySize(directoryPath);
     query.prepare("INSERT INTO directories (path, size) VALUES (?, ?)");
-    foreach (const QFileInfo &subDir, dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot)){
+    query.addBindValue(directoryPath);
+    query.addBindValue(currentFolderSize);
+    if (!query.exec()) {
+        qWarning() << "Failed to insert parent directory:" << query.lastError().text();
+    }
+
+    foreach (const QFileInfo &subDir, dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot)) {
         if (excludedFolders.contains(subDir.fileName(), Qt::CaseInsensitive)) {
             continue;
         }
-        recurisveSelectiveFolderFunc(subDir.absoluteFilePath(),query,counter - 1);
-        qint64 subFolderSize = getDirectorySize(subDir.absoluteFilePath());
-        query.addBindValue(subDir.absoluteFilePath());
-        query.addBindValue(subFolderSize);
-        query.exec();
+
+        recurisveSelectiveFolderFunc(subDir.absoluteFilePath(), query, counter - 1);
     }
 }
+
 

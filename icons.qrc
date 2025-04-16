@@ -7,5 +7,8 @@
         <file>images/foward_arrow.png</file>
         <file>images/up_arrow.png</file>
         <file>images/reload.png</file>
+        <file>images/quick_access_icon.png</file>
+        <file>images/star.png</file>
+        <file>images/Logo.png</file>
     </qresource>
 </RCC>

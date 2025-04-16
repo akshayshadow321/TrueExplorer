@@ -5,6 +5,9 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include <QStandardPaths>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
 #include <QDebug>
 
 ContextMenuActions::ContextMenuActions()
@@ -59,28 +62,41 @@ void ContextMenuActions::pasteFiles(QStringList &clipboardPaths, bool &cutMode, 
 // Delete Files
 void ContextMenuActions::deleteFiles(const QStringList &filePaths)
 {
+    qDebug() << filePaths;
     if (filePaths.isEmpty()) return;
 
     QMessageBox::StandardButton reply = QMessageBox::question(
-        nullptr, "Delete Files", "Are you sure you want to delete these files?",
+        nullptr, "Delete Files", "Are you sure you want to delete the selected items?",
         QMessageBox::Yes | QMessageBox::No);
 
     if (reply == QMessageBox::Yes)
     {
         for (const QString &filePath : filePaths)
         {
-            QFile file(filePath);
-            if (file.exists())
+            QFileInfo info(filePath);
+            if (info.isDir())
             {
-                file.remove();
-                qDebug() << "Deleted file: " << filePath;
+                QDir dir(filePath);
+                if (dir.removeRecursively())
+                    qDebug() << "Deleted directory: " << filePath;
+                else
+                    qWarning() << "Failed to delete directory: " << filePath;
+            }
+            else if (info.isFile())
+            {
+                QFile file(filePath);
+                if (file.remove())
+                    qDebug() << "Deleted file: " << filePath;
+                else
+                    qWarning() << "Failed to delete file: " << filePath;
             }
         }
     }
 }
 
+
 // Add to Favourites
-void ContextMenuActions::addToFavourites(const QStringList &filePaths)
+void ContextMenuActions::addorRemoveFavourites(const QStringList &filePaths)
 {
     if (filePaths.isEmpty()) {
         qDebug() << "empty";
@@ -99,37 +115,121 @@ void ContextMenuActions::addToFavourites(const QStringList &filePaths)
         }
     }
 
-    QFile file(favFile);
-    if (file.open(QIODevice::Append | QIODevice::Text))
-    {
-        QTextStream out(&file);
-        for (const QString &filePath : filePaths)
-        {
-            out << filePath << "\n";
+    // Read existing favorites
+    QStringList existingFavorites;
+    QFile readFile(favFile);
+    if (readFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&readFile);
+        while (!in.atEnd()) {
+            QString line = in.readLine().trimmed();
+            if (!line.isEmpty()) {
+                existingFavorites.append(line);
+            }
+        }
+        readFile.close();
+    }
+
+    // Toggle favorite status
+    QSet<QString> favSet(existingFavorites.begin(), existingFavorites.end());
+    QStringList added, removed;
+
+    for (const QString &filePath : filePaths) {
+        if (favSet.contains(filePath)) {
+            favSet.remove(filePath);
+            removed.append(filePath);
+            qDebug() << "Removed from favourites: " << filePath;
+        } else {
+            favSet.insert(filePath);
+            added.append(filePath);
             qDebug() << "Added to favourites: " << filePath;
         }
-        file.close();
     }
-    else
-    {
-        qDebug() << "Failed to open file: " << favFile << " Error: " << file.errorString();
+
+    // Write updated favorites
+    QFile writeFile(favFile);
+    if (writeFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+        QTextStream out(&writeFile);
+        for (const QString &fav : favSet) {
+            out << fav << "\n";
+        }
+        writeFile.close();
+    } else {
+        qDebug() << "Failed to write to file: " << favFile << " Error: " << writeFile.errorString();
+        return;
+    }
+
+    // Notify user with a pop-up
+    QString message;
+    if (!added.isEmpty()) {
+        message += "Added to Favourites:\n" + added.join("\n") + "\n\n";
+    }
+    if (!removed.isEmpty()) {
+        message += "Removed from Favourites:\n" + removed.join("\n");
+    }
+
+    if (!message.isEmpty()) {
+        QMessageBox::information(nullptr, "Favourites Updated", message.trimmed());
     }
 }
-// View Properties
-void ContextMenuActions::viewProperties(const QStringList &filePaths)
-{
+
+
+void ContextMenuActions::viewProperties(const QStringList &filePaths) {
     if (filePaths.isEmpty()) return;
 
-    QString details;
-    for (const QString &filePath : filePaths)
-    {
-        QFileInfo fileInfo(filePath);
-        details += QString("File: %1\nSize: %2 bytes\nCreated: %3\nModified: %4\n\n")
-                       .arg(fileInfo.fileName())
-                       .arg(fileInfo.size())
-                       .arg(fileInfo.birthTime().toString())
-                       .arg(fileInfo.lastModified().toString());
+    QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/file_index.db";
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "ViewPropsConnection");
+    db.setDatabaseName(dbPath);
+
+    if (!db.open()) {
+        qDebug() << "Failed to open DB: " << db.lastError().text();
+        return;
     }
 
-    QMessageBox::information(nullptr, "File Properties", details);
+    QString message;
+
+    for (const QString &path : filePaths) {
+        QFileInfo info(path);
+        QString fileName = info.fileName();
+        QString created = info.birthTime().isValid() ? info.birthTime().toString(Qt::ISODate) : "Unavailable";
+
+        QSqlQuery query(db);
+        QString sizeStr = "Unknown";
+        QString modified;
+
+        if (info.isDir()) {
+            query.prepare("SELECT size FROM directories WHERE path = ?");
+            query.addBindValue(path);
+            if (query.exec() && query.next()) {
+                qint64 size = query.value(0).toLongLong();
+                sizeStr = QString::number(size / 1024.0, 'f', 2) + " KB";
+            }
+        } else {
+            query.prepare("SELECT size, modified FROM files WHERE path = ?");
+            query.addBindValue(path);
+            if (query.exec() && query.next()) {
+                qint64 size = query.value(0).toLongLong();
+                sizeStr = QString::number(size / 1024.0, 'f', 2) + " KB";
+                modified = query.value(1).toString();
+            }
+        }
+
+        message += QString("Name: %1\nPath: %2\nSize: %3\nCreated: %4\n")
+                       .arg(fileName, path, sizeStr, created);
+
+        if (!modified.isEmpty()) {
+            message += "Modified: " + modified + "\n";
+        }
+
+        message += "\n";
+    }
+
+    db.close();
+    QSqlDatabase::removeDatabase("ViewPropsConnection");
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("File/Folder Properties");
+    msgBox.setText(message.trimmed());
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.exec();
 }
+

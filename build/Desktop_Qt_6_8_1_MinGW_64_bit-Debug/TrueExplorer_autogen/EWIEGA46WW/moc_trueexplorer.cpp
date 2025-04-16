@@ -48,20 +48,24 @@ static constexpr auto qt_meta_stringdata_ZN12TrueExplorerE = QtMocHelpers::strin
     "on_newFileButton_clicked",
     "on_newFolderButton_clicked",
     "renameSelectedItem",
-    "deleteSelectedItem",
     "on_prevDirectoryButton_clicked",
-    "on_treeWidget_itemDoubleClicked",
-    "QTreeWidgetItem*",
-    "item",
-    "column",
-    "on_treeWidget_customContextMenuRequested",
-    "pos",
     "testFunction",
     "on_prevFolderButton_clicked",
     "on_nextFolderButton_clicked",
     "performSearch",
     "on_searchButton_clicked",
-    "on_searchLineEdit_textChanged"
+    "on_searchLineEdit_textChanged",
+    "onDriveClicked",
+    "row",
+    "column",
+    "on_treeWidget_2_itemDoubleClicked",
+    "QTreeWidgetItem*",
+    "item",
+    "on_treeWidget_2_customContextMenuRequested",
+    "pos",
+    "on_favoritesButton_clicked",
+    "on_viewIndexToolButton_clicked",
+    "on_recentFilesButton_clicked"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -73,7 +77,7 @@ Q_CONSTINIT static const uint qt_meta_data_ZN12TrueExplorerE[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-      18,   14, // methods
+      21,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -81,24 +85,27 @@ Q_CONSTINIT static const uint qt_meta_data_ZN12TrueExplorerE[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,  122,    2, 0x08,    1 /* Private */,
-       3,    1,  123,    2, 0x08,    2 /* Private */,
-       5,    0,  126,    2, 0x08,    4 /* Private */,
-       6,    0,  127,    2, 0x08,    5 /* Private */,
-       7,    1,  128,    2, 0x08,    6 /* Private */,
-       8,    0,  131,    2, 0x08,    8 /* Private */,
-       9,    0,  132,    2, 0x08,    9 /* Private */,
-      10,    0,  133,    2, 0x08,   10 /* Private */,
-      11,    0,  134,    2, 0x08,   11 /* Private */,
-      12,    0,  135,    2, 0x08,   12 /* Private */,
-      13,    2,  136,    2, 0x08,   13 /* Private */,
-      17,    1,  141,    2, 0x08,   16 /* Private */,
-      19,    0,  144,    2, 0x08,   18 /* Private */,
-      20,    0,  145,    2, 0x08,   19 /* Private */,
-      21,    0,  146,    2, 0x08,   20 /* Private */,
-      22,    0,  147,    2, 0x08,   21 /* Private */,
-      23,    0,  148,    2, 0x08,   22 /* Private */,
-      24,    0,  149,    2, 0x08,   23 /* Private */,
+       1,    0,  140,    2, 0x08,    1 /* Private */,
+       3,    1,  141,    2, 0x08,    2 /* Private */,
+       5,    0,  144,    2, 0x08,    4 /* Private */,
+       6,    0,  145,    2, 0x08,    5 /* Private */,
+       7,    1,  146,    2, 0x08,    6 /* Private */,
+       8,    0,  149,    2, 0x08,    8 /* Private */,
+       9,    0,  150,    2, 0x08,    9 /* Private */,
+      10,    0,  151,    2, 0x08,   10 /* Private */,
+      11,    0,  152,    2, 0x08,   11 /* Private */,
+      12,    0,  153,    2, 0x08,   12 /* Private */,
+      13,    0,  154,    2, 0x08,   13 /* Private */,
+      14,    0,  155,    2, 0x08,   14 /* Private */,
+      15,    0,  156,    2, 0x08,   15 /* Private */,
+      16,    0,  157,    2, 0x08,   16 /* Private */,
+      17,    0,  158,    2, 0x08,   17 /* Private */,
+      18,    2,  159,    2, 0x08,   18 /* Private */,
+      21,    2,  164,    2, 0x08,   21 /* Private */,
+      24,    1,  169,    2, 0x08,   24 /* Private */,
+      26,    0,  172,    2, 0x08,   26 /* Private */,
+      27,    0,  173,    2, 0x08,   27 /* Private */,
+      28,    0,  174,    2, 0x08,   28 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -111,11 +118,14 @@ Q_CONSTINIT static const uint qt_meta_data_ZN12TrueExplorerE[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 14, QMetaType::Int,   15,   16,
-    QMetaType::Void, QMetaType::QPoint,   18,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int,   19,   20,
+    QMetaType::Void, 0x80000000 | 22, QMetaType::Int,   23,   20,
+    QMetaType::Void, QMetaType::QPoint,   25,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -150,17 +160,8 @@ Q_CONSTINIT const QMetaObject TrueExplorer::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'renameSelectedItem'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'deleteSelectedItem'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_prevDirectoryButton_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'on_treeWidget_itemDoubleClicked'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<QTreeWidgetItem *, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        // method 'on_treeWidget_customContextMenuRequested'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<const QPoint &, std::false_type>,
         // method 'testFunction'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_prevFolderButton_clicked'
@@ -172,6 +173,23 @@ Q_CONSTINIT const QMetaObject TrueExplorer::staticMetaObject = { {
         // method 'on_searchButton_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_searchLineEdit_textChanged'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onDriveClicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        // method 'on_treeWidget_2_itemDoubleClicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QTreeWidgetItem *, std::false_type>,
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        // method 'on_treeWidget_2_customContextMenuRequested'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QPoint &, std::false_type>,
+        // method 'on_favoritesButton_clicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'on_viewIndexToolButton_clicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'on_recentFilesButton_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
@@ -190,16 +208,19 @@ void TrueExplorer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         case 5: _t->on_newFileButton_clicked(); break;
         case 6: _t->on_newFolderButton_clicked(); break;
         case 7: _t->renameSelectedItem(); break;
-        case 8: _t->deleteSelectedItem(); break;
-        case 9: _t->on_prevDirectoryButton_clicked(); break;
-        case 10: _t->on_treeWidget_itemDoubleClicked((*reinterpret_cast< std::add_pointer_t<QTreeWidgetItem*>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
-        case 11: _t->on_treeWidget_customContextMenuRequested((*reinterpret_cast< std::add_pointer_t<QPoint>>(_a[1]))); break;
-        case 12: _t->testFunction(); break;
-        case 13: _t->on_prevFolderButton_clicked(); break;
-        case 14: _t->on_nextFolderButton_clicked(); break;
-        case 15: _t->performSearch(); break;
-        case 16: _t->on_searchButton_clicked(); break;
-        case 17: _t->on_searchLineEdit_textChanged(); break;
+        case 8: _t->on_prevDirectoryButton_clicked(); break;
+        case 9: _t->testFunction(); break;
+        case 10: _t->on_prevFolderButton_clicked(); break;
+        case 11: _t->on_nextFolderButton_clicked(); break;
+        case 12: _t->performSearch(); break;
+        case 13: _t->on_searchButton_clicked(); break;
+        case 14: _t->on_searchLineEdit_textChanged(); break;
+        case 15: _t->onDriveClicked((*reinterpret_cast< std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        case 16: _t->on_treeWidget_2_itemDoubleClicked((*reinterpret_cast< std::add_pointer_t<QTreeWidgetItem*>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        case 17: _t->on_treeWidget_2_customContextMenuRequested((*reinterpret_cast< std::add_pointer_t<QPoint>>(_a[1]))); break;
+        case 18: _t->on_favoritesButton_clicked(); break;
+        case 19: _t->on_viewIndexToolButton_clicked(); break;
+        case 20: _t->on_recentFilesButton_clicked(); break;
         default: ;
         }
     }
@@ -224,14 +245,14 @@ int TrueExplorer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 18)
+        if (_id < 21)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 18;
+        _id -= 21;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 18)
+        if (_id < 21)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 18;
+        _id -= 21;
     }
     return _id;
 }

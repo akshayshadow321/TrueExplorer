@@ -21,6 +21,8 @@ public:
     explicit TrueExplorer(QWidget *parent = nullptr);
     ~TrueExplorer();
     QDir dir;
+    void startFileMonitoringProcess();
+
 private slots:
     //UI Setup
     void IconSetup();
@@ -33,14 +35,10 @@ private slots:
     void on_newFileButton_clicked();
     void on_newFolderButton_clicked();
     void renameSelectedItem();
-    void deleteSelectedItem();
 
     //Button Clicks
     void on_prevDirectoryButton_clicked();
 
-    //Event Handlers
-    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
-    void on_treeWidget_customContextMenuRequested(const QPoint &pos);
     // void addToFavouritesSlot();
 
     void testFunction();
@@ -55,6 +53,18 @@ private slots:
 
     void on_searchLineEdit_textChanged();
 
+    void onDriveClicked(int row, int column);
+
+    void on_treeWidget_2_itemDoubleClicked(QTreeWidgetItem *item, int column);
+
+    void on_treeWidget_2_customContextMenuRequested(const QPoint &pos);
+
+    void on_favoritesButton_clicked();
+
+    void on_viewIndexToolButton_clicked();
+
+    void on_recentFilesButton_clicked();
+
 private:
     Ui::TrueExplorer *ui;
     QStringList clipboardPaths;   // Store copied/cut items
@@ -62,16 +72,13 @@ private:
     bool deleteFolderContents(QDir &dir);
     bool copyDirectory(const QString &source, const QString &destination);
 
-    // keybind events
-    void copySelectedItems();
-    void cutSelectedItems();
-    void pasteItems();
-    void deleteSelectedItems();
 
     QVector<QString> directoryHistory;  // Stores visited directories
     int historyIndex = -1;              // Tracks the current position
 
     void populateTreeWidget(QSqlQuery &query);
+
+    void populateDrives();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
